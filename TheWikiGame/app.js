@@ -28,7 +28,7 @@ const popularPages = [
 // DOM Elements - will be initialized when DOM loads
 let welcomeScreen, loadingScreen, gameScreen, winScreen;
 let startGameBtn, instructionsBtn, playAgainBtn, backBtn, giveUpBtn;
-let startPageEl, targetPageEl, clickCountEl, timerEl, wikiContent;
+let startPageEl, targetPageEl, clickCountEl, timerEl, wikiContent, wikiTOC;
 let instructionsModal, alertModal, menuModal, closeInstructions, closeMenu, alertOkBtn;
 
 // Initialize DOM elements and event listeners when page loads
@@ -50,6 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
     clickCountEl = document.getElementById('clickCount');
     timerEl = document.getElementById('timer');
     wikiContent = document.getElementById('wikiContent');
+    wikiTOC = document.getElementById('wikiTOC');
 
     instructionsModal = document.getElementById('instructionsModal');
     alertModal = document.getElementById('alertModal');
@@ -142,8 +143,11 @@ function startNewGame() {
 }
 
 function loadWikiPage(pageName) {
-    console.log('🔄 Loading page:', pageName);
-    console.log('🎯 Target is:', gameState.targetPage);
+    console.log('Loading page:', pageName);
+    console.log('Starting game...');
+    console.log('Target is:', gameState.targetPage);
+    
+    // Start with first page
     
     // Store the current page we're loading
     gameState.expectedPage = pageName;
@@ -209,6 +213,9 @@ function displayWikiPageFromHTML(html, pageName) {
         el.remove();
     });
     
+    // Build table of contents
+    buildTableOfContents();
+    
     // Intercept all link clicks
     const links = wikiContent.querySelectorAll('a');
     links.forEach(link => {
@@ -257,21 +264,95 @@ function displayWikiPageFromHTML(html, pageName) {
     wikiContent.scrollTop = 0;
 }
 
+function buildTableOfContents() {
+    if (!wikiContent || !wikiTOC) return;
+    
+    console.log('Building table of contents...');
+    
+    // Clear existing TOC
+    wikiTOC.innerHTML = '';
+    
+    // Find all h2 and h3 headings in the content
+    const headings = wikiContent.querySelectorAll('h2, h3');
+    
+    if (headings.length === 0) {
+        console.log('No headings found for TOC');
+        return;
+    }
+    
+    let currentList = wikiTOC;
+    let lastLevel = 2;
+    
+    headings.forEach((heading, index) => {
+        const level = parseInt(heading.tagName.substring(1)); // 2 or 3
+        const text = heading.textContent.trim();
+        
+        // Skip empty headings
+        if (!text) return;
+        
+        // Add ID to heading if it doesn't have one
+        if (!heading.id) {
+            heading.id = `heading-${index}`;
+        }
+        
+        // Create list item
+        const li = document.createElement('li');
+        const link = document.createElement('a');
+        link.href = `#${heading.id}`;
+        link.textContent = text;
+        link.className = level === 3 ? 'toc-sub-item' : 'toc-item';
+        
+        // Handle click to scroll to heading
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            heading.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+        
+        li.appendChild(link);
+        
+        // Handle nesting for h3 (sub-items under h2)
+        if (level === 3 && lastLevel === 2) {
+            // Create nested ul for h3 items under the last h2
+            let nestedUl = currentList.querySelector('li:last-child ul');
+            if (!nestedUl) {
+                nestedUl = document.createElement('ul');
+                const lastLi = currentList.querySelector('li:last-child');
+                if (lastLi) {
+                    lastLi.appendChild(nestedUl);
+                }
+            }
+            if (nestedUl) {
+                nestedUl.appendChild(li);
+            } else {
+                currentList.appendChild(li);
+            }
+        } else if (level === 2) {
+            // Add h2 items to the main list
+            wikiTOC.appendChild(li);
+            currentList = wikiTOC;
+        }
+        
+        lastLevel = level;
+    });
+    
+    console.log(`Built TOC with ${headings.length} headings`);
+}
+
 function navigateToPage(pageName) {
     if (gameState.state !== 'playing') return;
     
-    console.log('📄 navigateToPage called:', pageName);
-    console.log('🎯 Target:', gameState.targetPage);
+    console.log('navigateToPage called:', pageName);
+    console.log('Target:', gameState.targetPage);
     
     // Update game state
     gameState.clickCount++;
     gameState.navigationHistory.push(pageName);
     
-    console.log('📊 Click count:', gameState.clickCount);
-    console.log('📚 History:', gameState.navigationHistory);
+    console.log('Click count:', gameState.clickCount);
+    console.log('History:', gameState.navigationHistory);
     
     // Update UI
-    clickCountEl.textContent = `👆 ${gameState.clickCount} clicks`;
+    clickCountEl.textContent = `${gameState.clickCount} clicks`;
     backBtn.disabled = false;
     
     // Check if we reached the target
@@ -332,7 +413,7 @@ function startTimer() {
     gameState.startTime = Date.now();
     gameState.timer = setInterval(() => {
         gameState.elapsedTime = Math.floor((Date.now() - gameState.startTime) / 1000);
-        timerEl.textContent = `⏱️ ${formatTime(gameState.elapsedTime)}`;
+        timerEl.textContent = `${formatTime(gameState.elapsedTime)}`;
     }, 1000);
 }
 
