@@ -1,63 +1,14 @@
-# The Wiki Game 🌐 - Web Version
+# The Wiki Game
 
-A Progressive Web App (PWA) where players navigate from one Wikipedia page to another using only article links!
+A Progressive Web App (PWA) where players navigate from one Wikipedia page to another using only article links
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Option 1: Open Locally (Simple)
 
-1. Open `index.html` directly in your browser:
-   - **Windows**: Double-click `index.html` OR right-click → Open with → Chrome/Edge/Firefox
-   - **Mac/Linux**: Double-click `index.html`
+Open `index.html` directly in your browser
 
-2. Start playing! 🎮
-
-> **Note**: Some browsers may have CORS restrictions when opening files directly. If the Wikipedia pages don't load, use Option 2 below.
-
-### Option 2: Use a Local Server (Recommended)
-
-#### Using Python (if installed):
-```bash
-# Navigate to the web folder
-cd web
-
-# Python 3
-python -m http.server 8000
-
-# Python 2
-python -m SimpleHTTPServer 8000
-```
-
-Then open: `http://localhost:8000`
-
-#### Using Node.js (if installed):
-```bash
-# Install http-server globally (one time)
-npm install -g http-server
-
-# Navigate to the web folder
-cd web
-
-# Start server
-http-server -p 8000
-```
-
-Then open: `http://localhost:8000`
-
-#### Using PHP (if installed):
-```bash
-cd web
-php -S localhost:8000
-```
-
-Then open: `http://localhost:8000`
-
-#### Using VS Code:
-1. Install the "Live Server" extension
-2. Right-click on `index.html`
-3. Select "Open with Live Server"
-
-## 📱 Install as Mobile App
+## Install as Mobile App
 
 ### On iPhone/iPad:
 1. Open the game in Safari
@@ -75,7 +26,7 @@ Then open: `http://localhost:8000`
 
 ### On Windows:
 1. Open the game in Chrome or Edge
-2. Click the install icon (➕ or computer icon) in the address bar
+2. Click the install icon ( + or computer icon) in the address bar
 3. Click "Install"
 
 ### On Mac:
@@ -83,7 +34,7 @@ Then open: `http://localhost:8000`
 2. Click the install icon in the address bar
 3. Click "Install"
 
-## 🎮 How to Play
+## How to Play
 
 1. **Start Game** - Begin with random Wikipedia pages
 2. **Navigate** - Click only on links within articles
@@ -92,19 +43,7 @@ Then open: `http://localhost:8000`
 5. **Use Hints** - Get help when stuck
 6. **Challenge Yourself** - Beat your best time!
 
-## ✨ Features
-
-- ✅ **Works Everywhere**: Windows, Mac, Linux, iOS, Android
-- ✅ **No Installation Required**: Play in any browser
-- ✅ **Installable as App**: Add to home screen on mobile
-- ✅ **Offline Support**: Core app works without internet (Wikipedia needs connection)
-- ✅ **Responsive Design**: Works on phones, tablets, and desktops
-- ✅ **Beautiful UI**: Modern, gradient backgrounds, smooth animations
-- ✅ **Game Stats**: Track clicks and time
-- ✅ **Hints System**: Get help when stuck
-- ✅ **History Navigation**: Back button to undo moves
-
-## 🛠️ Technical Details
+## Technical Details
 
 ### Built With:
 - **HTML5** - Structure
@@ -113,31 +52,13 @@ Then open: `http://localhost:8000`
 - **PWA** - Progressive Web App features
 - **Service Worker** - Offline support and caching
 
-### Browser Support:
-- ✅ Chrome/Edge (Windows, Mac, Linux, Android)
-- ✅ Safari (Mac, iOS)
-- ✅ Firefox (Windows, Mac, Linux)
-- ✅ Opera
-- ✅ Samsung Internet
-
 ### Requirements:
 - Modern web browser (2020+)
 - Internet connection (for Wikipedia content)
 - JavaScript enabled
 
-## 📂 Project Structure
 
-```
-web/
-├── index.html          # Main HTML file
-├── styles.css          # All styles
-├── app.js              # Game logic
-├── manifest.json       # PWA manifest
-├── service-worker.js   # Offline support
-└── README.md           # This file
-```
-
-## 🎯 Game Features
+## Game Features
 
 ### Gameplay:
 - **45+ Wikipedia topics** for variety

@@ -390,13 +390,18 @@ body {
 
 /* Game Controls */
 .game-controls {
+    position: absolute;
+    bottom: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 1rem;
     padding: 1rem;
-    background-color: white;
-    border-top: 1px solid #e5e7eb;
+    background-color: transparent;
+    border-top: none;
+    z-index: 10;
 }
 
 .control-btn {
@@ -406,27 +411,44 @@ body {
     font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s;
-    background-color: var(--bg-light);
+    transition: all 0.3s ease;
+    background-color: rgba(249, 250, 251, 0.95);
     color: var(--text-primary);
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
 }
 
 .control-btn:hover:not(:disabled) {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    background-color: rgba(255, 255, 255, 1);
+}
+
+.control-btn:active:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: var(--shadow);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .control-btn:disabled {
-    opacity: 0.3;
+    opacity: 0.6;
     cursor: not-allowed;
+    background-color: rgba(229, 231, 235, 0.95);
+    color: var(--text-secondary);
 }
 
 .danger-btn {
-    background-color: #fee2e2;
+    background-color: rgba(254, 226, 226, 0.95);
     color: #991b1b;
+}
+
+.danger-btn:hover:not(:disabled) {
+    background-color: rgba(239, 68, 68, 0.9);
+    color: white;
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(239, 68, 68, 0.3);
 }
 
 .btn-icon {
