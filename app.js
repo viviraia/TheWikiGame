@@ -213,6 +213,23 @@ function displayWikiPageFromHTML(html, pageName) {
         el.remove();
     });
     
+    // Remove the last section of the Wikipedia page
+    const allSections = wikiContent.querySelectorAll('h2');
+    if (allSections.length > 0) {
+        const lastSection = allSections[allSections.length - 1];
+        // Remove the last h2 and all content until the next h2 or end of content
+        let currentElement = lastSection;
+        while (currentElement) {
+            const nextElement = currentElement.nextElementSibling;
+            currentElement.remove();
+            currentElement = nextElement;
+            // Stop if we hit another h2 (which shouldn't happen as it's the last section)
+            if (currentElement && currentElement.tagName === 'H2') {
+                break;
+            }
+        }
+    }
+    
     // Build table of contents
     buildTableOfContents();
     
