@@ -129,8 +129,8 @@ function startNewGame() {
     // Update UI
     startPageEl.textContent = gameState.startPage;
     targetPageEl.textContent = gameState.targetPage;
-    clickCountEl.textContent = `👆 0 clicks`;
-    timerEl.textContent = `⏱️ 00:00`;
+    clickCountEl.textContent = `0 clicks`;
+    timerEl.textContent = `00:00`;
     backBtn.disabled = true;
 
     // Load the starting Wikipedia page
@@ -173,11 +173,11 @@ function loadWikiPage(pageName) {
             return response.text();
         })
         .then(html => {
-            console.log('✅ Wikipedia HTML loaded');
+            console.log('Wikipedia HTML loaded');
             displayWikiPageFromHTML(html, pageName);
         })
         .catch(error => {
-            console.error('❌ Error loading Wikipedia:', error);
+            console.error('Error loading Wikipedia:', error);
             wikiContent.innerHTML = `
                 <div class="wiki-loading">
                     <p>Failed to load Wikipedia page.</p>
@@ -223,7 +223,7 @@ function displayWikiPageFromHTML(html, pageName) {
             e.preventDefault();
             
             const href = link.getAttribute('href');
-            console.log('🖱️ Link clicked:', href);
+            console.log('Link clicked:', href);
             
             if (href && href.startsWith('./')) {
                 // Wikipedia REST API returns relative links like ./Article_Name
@@ -231,20 +231,20 @@ function displayWikiPageFromHTML(html, pageName) {
                 
                 // Ignore special pages
                 if (!newPageName.includes(':') && newPageName !== 'Main_Page' && newPageName) {
-                    console.log('✅ Navigating to:', newPageName);
+                    console.log(' Navigating to:', newPageName);
                     navigateToPage(newPageName);
                 } else {
-                    console.log('⛔ Ignoring special page');
+                    console.log('Ignoring special page');
                 }
             } else if (href && href.startsWith('/wiki/')) {
                 const newPageName = href.replace('/wiki/', '').split('#')[0];
                 
                 // Ignore special pages
                 if (!newPageName.includes(':') && newPageName !== 'Main_Page' && newPageName) {
-                    console.log('✅ Navigating to:', newPageName);
+                    console.log('Navigating to:', newPageName);
                     navigateToPage(newPageName);
                 } else {
-                    console.log('⛔ Ignoring special page');
+                    console.log('Ignoring special page');
                 }
             } else if (href && href.includes('wikipedia.org/wiki/')) {
                 // Handle full URLs
@@ -252,7 +252,7 @@ function displayWikiPageFromHTML(html, pageName) {
                 if (match) {
                     const newPageName = decodeURIComponent(match[1]);
                     if (!newPageName.includes(':') && newPageName !== 'Main_Page' && newPageName) {
-                        console.log('✅ Navigating to:', newPageName);
+                        console.log('Navigating to:', newPageName);
                         navigateToPage(newPageName);
                     }
                 }
@@ -359,13 +359,13 @@ function navigateToPage(pageName) {
     const normalizedCurrent = pageName.toLowerCase().replace(/_/g, ' ');
     const normalizedTarget = gameState.targetPage.toLowerCase();
     
-    console.log('🔍 COMPARISON:');
+    console.log('   COMPARISON:');
     console.log('   Current:', normalizedCurrent);
     console.log('   Target:', normalizedTarget);
     console.log('   Match?', normalizedCurrent === normalizedTarget);
     
     if (normalizedCurrent === normalizedTarget) {
-        console.log('🎉🎉🎉 WIN! 🎉🎉🎉');
+        console.log('WIN');
         setTimeout(() => winGame(), 500);
         return;
     }
@@ -381,7 +381,7 @@ function goBack() {
     const previousPage = gameState.navigationHistory[gameState.navigationHistory.length - 1];
     gameState.currentPage = previousPage.replace(/_/g, ' ');
     
-    console.log('⬅️ Going back to:', previousPage);
+    console.log(' Going back to:', previousPage);
     
     loadWikiPage(previousPage);
     backBtn.disabled = gameState.navigationHistory.length <= 1;

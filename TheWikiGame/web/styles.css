@@ -226,6 +226,7 @@ body {
     box-shadow: var(--shadow);
     background-color: white;
     display: flex;
+    flex-direction: row;
 }
 
 .wiki-sidebar {
@@ -317,6 +318,49 @@ body {
 .wiki-content img {
     max-width: 100%;
     height: auto;
+}
+
+/* Wikipedia Infobox/Sidebar Styling */
+.wiki-content .infobox,
+.wiki-content .sidebar,
+.wiki-content .sidebar-collapse,
+.wiki-content .vcard,
+.wiki-content .nomobile,
+.wiki-content table.infobox,
+.wiki-content table.sidebar {
+    float: right;
+    clear: right;
+    margin: 0 0 1rem 1rem;
+    max-width: 300px;
+    background-color: #f9fafb;
+    border: 1px solid #e5e7eb;
+    padding: 0.5rem;
+    font-size: 0.9rem;
+}
+
+/* Make infoboxes float left as requested */
+.wiki-content .infobox.float-left,
+.wiki-content .sidebar.float-left,
+.wiki-content .sidebar-collapse,
+.wiki-content .vcard {
+    float: left;
+    clear: left;
+    margin: 0 1rem 1rem 0;
+}
+
+.wiki-content .infobox th,
+.wiki-content .sidebar th,
+.wiki-content .infobox td,
+.wiki-content .sidebar td {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.85rem;
+}
+
+.wiki-content .infobox img,
+.wiki-content .sidebar img {
+    max-width: 100%;
+    height: auto;
+    display: block;
 }
 
 .wiki-loading {
