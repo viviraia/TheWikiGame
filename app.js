@@ -22,7 +22,97 @@ const popularPages = [
     "Literature", "Psychology", "Economics", "Politics", "Technology",
     "Renaissance", "Industrial_Revolution", "Ancient_Rome", "Ancient_Greece", "China",
     "India", "Japan", "Germany", "United_Kingdom", "Russia",
-    "Space_exploration", "Artificial_intelligence", "Climate_change", "Democracy", "Religion"
+    "Space_exploration", "Artificial_intelligence", "Climate_change", "Democracy", "Religion",
+    // Historical Figures
+    "Napoleon", "Isaac_Newton", "Charles_Darwin", "Nikola_Tesla", "Marie_Curie",
+    "Galileo_Galilei", "Julius_Caesar", "Cleopatra", "Martin_Luther_King_Jr.", "Mahatma_Gandhi",
+    "Abraham_Lincoln", "George_Washington", "Queen_Victoria", "Alexander_the_Great", "Genghis_Khan",
+    // Countries and Places
+    "Brazil", "Australia", "Canada", "Mexico", "Egypt",
+    "Italy", "Spain", "Greece", "Turkey", "South_Korea",
+    "New_York_City", "London", "Paris", "Tokyo", "Rome",
+    // Science and Nature
+    "Black_hole", "Quantum_mechanics", "Theory_of_relativity", "Big_Bang", "Periodic_table",
+    "Photosynthesis", "Dinosaur", "Human_brain", "Heart", "Ocean",
+    "Earth", "Mars", "Jupiter", "Saturn", "Sun",
+    "Gravity", "Electricity", "Magnetism", "Light", "Sound",
+    // Arts and Culture
+    "Pablo_Picasso", "Vincent_van_Gogh", "Michelangelo", "Mozart", "Beethoven",
+    "Elvis_Presley", "Michael_Jackson", "Bob_Dylan", "The_Rolling_Stones", "Pink_Floyd",
+    "Star_Wars", "Harry_Potter", "The_Lord_of_the_Rings", "Marvel_Comics", "DC_Comics",
+    "Olympic_Games", "FIFA_World_Cup", "Basketball", "Football", "Tennis",
+    // Technology and Innovation
+    "Apple_Inc.", "Microsoft", "Google", "Tesla,_Inc.", "Amazon_(company)",
+    "Smartphone", "Automobile", "Airplane", "Television", "Radio",
+    "World_Wide_Web", "Social_media", "Bitcoin", "Programming_language", "Robotics",
+    // History and Events
+    "World_War_I", "Cold_War", "French_Revolution", "American_Civil_War", "Vietnam_War",
+    "Great_Depression", "Holocaust", "Space_Race", "Moon_landing", "September_11_attacks",
+    // Philosophy and Ideas
+    "Socrates", "Plato", "Aristotle", "Confucius", "Buddhism",
+    "Christianity", "Islam", "Hinduism", "Judaism", "Atheism",
+    "Ethics", "Metaphysics", "Epistemology", "Logic", "Aesthetics",
+    // Miscellaneous
+    "Pizza", "Coffee", "Chocolate", "Beer", "Wine",
+    "Cat", "Dog", "Tiger", "Elephant", "Whale",
+    "Tree", "Mountain", "River", "Desert", "Forest",
+    // Architecture and Landmarks
+    "Eiffel_Tower", "Great_Wall_of_China", "Taj_Mahal", "Colosseum", "Statue_of_Liberty",
+    "Pyramids_of_Giza", "Machu_Picchu", "Petra", "Stonehenge", "Big_Ben",
+    // Literature and Authors
+    "Jane_Austen", "Mark_Twain", "Ernest_Hemingway", "J._K._Rowling", "Stephen_King",
+    "George_Orwell", "F._Scott_Fitzgerald", "Charles_Dickens", "Homer", "Dante_Alighieri",
+    // Mythology and Folklore
+    "Greek_mythology", "Norse_mythology", "Egyptian_mythology", "Zeus", "Odin",
+    "King_Arthur", "Robin_Hood", "Dracula", "Vampire", "Dragon",
+    // Medical and Health
+    "Antibiotics", "Vaccine", "Cancer", "Diabetes", "Mental_health",
+    "Immune_system", "Neuroscience", "Surgery", "Virus", "Bacteria",
+    // Languages and Linguistics
+    "English_language", "Spanish_language", "Mandarin_Chinese", "Latin", "Sanskrit",
+    "Sign_language", "Alphabet", "Grammar", "Phonetics", "Etymology",
+    // Economics and Business
+    "Capitalism", "Socialism", "Stock_market", "Cryptocurrency", "Inflation",
+    "Supply_and_demand", "Entrepreneurship", "Globalization", "Trade", "Banking",
+    // Environmental Science
+    "Ecosystem", "Biodiversity", "Endangered_species", "Deforestation", "Renewable_energy",
+    "Greenhouse_gas", "Sustainability", "Conservation_biology", "Pollution", "Recycling",
+    // Mathematics and Computing
+    "Algorithm", "Calculus", "Geometry", "Statistics", "Probability",
+    "Machine_learning", "Cybersecurity", "Database", "Compiler", "Operating_system",
+    // Music Genres and Instruments
+    "Jazz", "Rock_music", "Classical_music", "Hip_hop_music", "Electronic_music",
+    "Piano", "Guitar", "Violin", "Drums", "Orchestra",
+    // Film and Directors
+    "Alfred_Hitchcock", "Steven_Spielberg", "Stanley_Kubrick", "Martin_Scorsese", "Quentin_Tarantino",
+    "The_Godfather", "Citizen_Kane", "Pulp_Fiction", "The_Shawshank_Redemption", "Casablanca",
+    // Astronomy and Cosmology
+    "Galaxy", "Milky_Way", "Nebula", "Supernova", "Exoplanet",
+    "Telescope", "NASA", "Hubble_Space_Telescope", "International_Space_Station", "Astronaut",
+    // Ancient Civilizations
+    "Mesopotamia", "Maya_civilization", "Inca_Empire", "Aztec", "Persian_Empire",
+    "Byzantine_Empire", "Ottoman_Empire", "Mongol_Empire", "Holy_Roman_Empire", "Viking",
+    // Human Rights and Social Movements
+    "Human_rights", "Civil_rights_movement", "Feminism", "Abolition_of_slavery", "Suffrage",
+    "Civil_disobedience", "Nonviolence", "Freedom_of_speech", "Equality", "Justice",
+    // Sports and Athletes
+    "Muhammad_Ali", "Michael_Jordan", "Pelé", "Serena_Williams", "Usain_Bolt",
+    "Cricket", "Rugby", "Boxing", "Swimming", "Gymnastics",
+    // Geology and Earth Science
+    "Plate_tectonics", "Volcano", "Earthquake", "Mineral", "Rock_(geology)",
+    "Fossil", "Geological_time_scale", "Weathering", "Erosion", "Glacier",
+    // Psychology and Neuroscience
+    "Consciousness", "Memory", "Learning", "Emotion", "Intelligence",
+    "Cognitive_science", "Behaviorism", "Psychoanalysis", "Sigmund_Freud", "Carl_Jung",
+    // Food and Cuisine
+    "Sushi", "Pasta", "Hamburger", "Bread", "Cheese",
+    "Italian_cuisine", "Chinese_cuisine", "French_cuisine", "Mexican_cuisine", "Indian_cuisine",
+    // Transportation and Vehicles
+    "Train", "Ship", "Bicycle", "Motorcycle", "Helicopter",
+    "Submarine", "Rocket", "Spacecraft", "Aviation", "Maritime_transport",
+    // Energy and Physics
+    "Nuclear_power", "Solar_energy", "Wind_power", "Fossil_fuel", "Thermodynamics",
+    "Wave", "Particle", "Atom", "Electron", "Proton"
 ];
 
 // DOM Elements - will be initialized when DOM loads
