@@ -1,6 +1,17 @@
 # The Wiki Game
 
-A Progressive Web App (PWA) where players navigate from one Wikipedia page to another using only article links
+A Progressive Web App (PWA) where players navigate from one Wikipedia page to another using only article links. Compete globally on the leaderboard!
+
+## ✨ Features
+
+- 🎮 Navigate Wikipedia using only article links
+- 🏆 Global leaderboard system
+- 📱 Installable as mobile/desktop app (PWA)
+- ⏱️ Track clicks and time
+- 🎯 Random page challenges
+- 📊 View top players worldwide
+- 🌙 Beautiful, modern UI
+- ⚡ Fast and responsive
 
 ## Quick Start
 
@@ -40,14 +51,30 @@ Open `index.html` directly in your browser
 2. **Navigate** - Click only on links within articles
 3. **Reach Target** - Find your way to the target page
 4. **Track Stats** - Monitor your clicks and time
-5. **Use Hints** - Get help when stuck
-6. **Challenge Yourself** - Beat your best time!
+5. **Submit Score** - Add your score to the global leaderboard
+6. **Compete** - Try to beat the top players!
+
+## 🏆 Leaderboard Setup
+
+The game includes a global leaderboard system using GitHub Gist as a backend.
+
+### Quick Setup (5 minutes):
+1. Create a GitHub Gist with filename `leaderboard.json` and content `{"entries": []}`
+2. Generate a GitHub token with `gist` scope
+3. Update `app.js` with your Gist ID and token
+
+**Full instructions:** See `QUICK_SETUP.md` or `LEADERBOARD_SETUP.md`
+
+**Testing locally?** The game uses localStorage by default - no setup needed!
 
 ## Technical Details
 
 ### Built With:
 - **HTML5** - Structure
 - **CSS3** - Styling with flexbox, animations
+- **JavaScript** - Game logic and Wikipedia API integration
+- **GitHub Gist** - Leaderboard backend
+- **Service Worker** - Offline support and PWA features
 - **JavaScript (Vanilla)** - No frameworks needed!
 - **PWA** - Progressive Web App features
 - **Service Worker** - Offline support and caching

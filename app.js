@@ -119,7 +119,12 @@ const popularPages = [
 let welcomeScreen, loadingScreen, gameScreen, winScreen;
 let startGameBtn, instructionsBtn, playAgainBtn, backBtn, giveUpBtn;
 let startPageEl, targetPageEl, clickCountEl, timerEl, wikiContent, wikiTOC;
-let instructionsModal, alertModal, menuModal, closeInstructions, closeMenu, alertOkBtn;
+let instructionsModal, alertModal, menuModal, leaderboardModal, closeInstructions, closeMenu, closeLeaderboard, alertOkBtn;
+let leaderboardBtn, submitScoreBtn, playerNameInput;
+
+// Leaderboard Manager
+// For testing, we'll use LocalLeaderboard. Switch to LeaderboardManager for production
+let leaderboard = null;
 
 // Initialize DOM elements and event listeners when page loads
 document.addEventListener('DOMContentLoaded', () => {
@@ -145,19 +150,34 @@ document.addEventListener('DOMContentLoaded', () => {
     instructionsModal = document.getElementById('instructionsModal');
     alertModal = document.getElementById('alertModal');
     menuModal = document.getElementById('menuModal');
+    leaderboardModal = document.getElementById('leaderboardModal');
     closeInstructions = document.getElementById('closeInstructions');
     closeMenu = document.getElementById('closeMenu');
+    closeLeaderboard = document.getElementById('closeLeaderboard');
     alertOkBtn = document.getElementById('alertOkBtn');
+
+    leaderboardBtn = document.getElementById('leaderboardBtn');
+    submitScoreBtn = document.getElementById('submitScoreBtn');
+    playerNameInput = document.getElementById('playerNameInput');
+
+    // Initialize leaderboard
+    // For production with GitHub Gist, use:
+    // leaderboard = new LeaderboardManager('YOUR_GIST_ID', 'YOUR_GITHUB_TOKEN');
+    // For local testing:
+    leaderboard = new LocalLeaderboard();
 
     // Event Listeners
     startGameBtn.addEventListener('click', startNewGame);
     playAgainBtn.addEventListener('click', startNewGame);
     instructionsBtn.addEventListener('click', () => showModal(instructionsModal));
+    leaderboardBtn.addEventListener('click', showLeaderboard);
     closeInstructions.addEventListener('click', () => hideModal(instructionsModal));
     closeMenu.addEventListener('click', () => hideModal(menuModal));
+    closeLeaderboard.addEventListener('click', () => hideModal(leaderboardModal));
     alertOkBtn.addEventListener('click', () => hideModal(alertModal));
     backBtn.addEventListener('click', goBack);
     giveUpBtn.addEventListener('click', giveUp);
+    submitScoreBtn.addEventListener('click', submitScore);
 
     document.getElementById('newGameBtn').addEventListener('click', () => {
         hideModal(menuModal);
@@ -173,7 +193,20 @@ document.addEventListener('DOMContentLoaded', () => {
         hideModal(menuModal);
     });
 
-    console.log('✅ The Wiki Game loaded successfully!');
+    // Leaderboard tabs
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            e.target.classList.add('active');
+            loadLeaderboardData(e.target.dataset.tab);
+        });
+    });
+
+    document.getElementById('retryLeaderboard').addEventListener('click', () => {
+        loadLeaderboardData('global');
+    });
+
+    console.log('The Wiki Game loaded successfully!');
 });
 
 // Screen Management
@@ -573,4 +606,123 @@ if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('service-worker.js')
         .then(reg => console.log('Service Worker registered'))
         .catch(err => console.log('Service Worker registration failed'));
+}
+
+// Leaderboard Functions
+async function showLeaderboard() {
+    showModal(leaderboardModal);
+    loadLeaderboardData('global');
+}
+
+async function loadLeaderboardData(tab = 'global') {
+    const loadingEl = document.getElementById('leaderboardLoading');
+    const dataEl = document.getElementById('leaderboardData');
+    const errorEl = document.getElementById('leaderboardError');
+    
+    // Show loading
+    loadingEl.style.display = 'flex';
+    dataEl.style.display = 'none';
+    errorEl.style.display = 'none';
+    
+    try {
+        let entries = [];
+        
+        if (tab === 'global') {
+            entries = await leaderboard.getTopScores(10);
+        } else if (tab === 'recent') {
+            const allData = await leaderboard.fetchLeaderboard();
+            entries = allData.entries.slice(0, 10);
+        }
+        
+        // Display entries
+        displayLeaderboardEntries(entries);
+        
+        // Show data
+        loadingEl.style.display = 'none';
+        dataEl.style.display = 'block';
+    } catch (error) {
+        console.error('Error loading leaderboard:', error);
+        loadingEl.style.display = 'none';
+        errorEl.style.display = 'flex';
+    }
+}
+
+function displayLeaderboardEntries(entries) {
+    const tbody = document.getElementById('leaderboardEntries');
+    tbody.innerHTML = '';
+    
+    if (entries.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="6" style="text-align: center; padding: 2rem; color: var(--text-secondary);">
+                    No entries yet. Be the first!
+                </td>
+            </tr>
+        `;
+        return;
+    }
+    
+    entries.forEach((entry, index) => {
+        const rank = index + 1;
+        const rankClass = rank <= 3 ? `rank-${rank}` : 'rank-other';
+        const rankBadge = `<div class="rank-badge ${rankClass}">${rank}</div>`;
+        
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${rankBadge}</td>
+            <td><strong>${escapeHtml(entry.playerName)}</strong></td>
+            <td class="route-info">${escapeHtml(entry.startPage)} → ${escapeHtml(entry.targetPage)}</td>
+            <td>${entry.clicks}</td>
+            <td>${formatTime(entry.time)}</td>
+            <td><span class="score-badge">${entry.score}</span></td>
+        `;
+        tbody.appendChild(row);
+    });
+}
+
+async function submitScore() {
+    if (gameState.state !== 'won') return;
+    
+    const playerName = playerNameInput.value.trim() || 'Anonymous';
+    
+    // Disable button and show loading
+    submitScoreBtn.disabled = true;
+    submitScoreBtn.textContent = 'Submitting...';
+    
+    try {
+        const result = await leaderboard.submitScore(
+            playerName,
+            gameState.startPage,
+            gameState.targetPage,
+            gameState.clickCount,
+            gameState.elapsedTime
+        );
+        
+        if (result.success) {
+            showAlert(
+                '🎉 Score Submitted!',
+                `Your rank: #${result.rank}\nScore: ${result.entry.score} points\n(${result.entry.clicks} clicks + ${formatTime(result.entry.time)})`
+            );
+            submitScoreBtn.textContent = '✓ Submitted';
+            submitScoreBtn.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+        } else {
+            throw new Error(result.error || 'Failed to submit score');
+        }
+    } catch (error) {
+        console.error('Error submitting score:', error);
+        showAlert('Error', 'Failed to submit score. Please try again.');
+        submitScoreBtn.disabled = false;
+        submitScoreBtn.textContent = 'Submit to Leaderboard';
+    }
+}
+
+function escapeHtml(text) {
+    const map = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+    };
+    return text.replace(/[&<>"']/g, m => map[m]);
 }

@@ -21,6 +21,7 @@
                 <p class="game-subtitle">Navigate from one Wikipedia page to another!</p>
                 <button id="startGameBtn" class="btn btn-primary">Start Game</button>
                 <button id="instructionsBtn" class="btn btn-secondary">How to Play</button>
+                <button id="leaderboardBtn" class="btn btn-secondary">Leaderboard</button>
             </div>
         </div>
 
@@ -95,7 +96,11 @@
                         </div>
                     </div>
                 </div>
-                <button id="playAgainBtn" class="btn btn-primary">Play Again</button>
+                <div class="win-actions">
+                    <input type="text" id="playerNameInput" placeholder="Enter your name (optional)" class="player-name-input" maxlength="20">
+                    <button id="submitScoreBtn" class="btn btn-success">Submit to Leaderboard</button>
+                    <button id="playAgainBtn" class="btn btn-primary">Play Again</button>
+                </div>
             </div>
         </div>
 
@@ -158,8 +163,52 @@
                 </div>
             </div>
         </div>
+
+        <!-- Leaderboard Modal -->
+        <div id="leaderboardModal" class="modal">
+            <div class="modal-content leaderboard-modal">
+                <div class="modal-header">
+                    <h2>🏆 Leaderboard</h2>
+                    <button class="close-btn" id="closeLeaderboard">×</button>
+                </div>
+                <div class="modal-body">
+                    <div class="leaderboard-tabs">
+                        <button class="tab-btn active" data-tab="global">Global Top 10</button>
+                        <button class="tab-btn" data-tab="recent">Recent Games</button>
+                    </div>
+                    <div class="leaderboard-content">
+                        <div id="leaderboardLoading" class="leaderboard-loading">
+                            <div class="spinner-small"></div>
+                            <p>Loading leaderboard...</p>
+                        </div>
+                        <div id="leaderboardData" class="leaderboard-data" style="display: none;">
+                            <table class="leaderboard-table">
+                                <thead>
+                                    <tr>
+                                        <th>Rank</th>
+                                        <th>Player</th>
+                                        <th>Route</th>
+                                        <th>Clicks</th>
+                                        <th>Time</th>
+                                        <th>Score</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="leaderboardEntries">
+                                    <!-- Entries will be inserted here -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <div id="leaderboardError" class="leaderboard-error" style="display: none;">
+                            <p>Failed to load leaderboard.</p>
+                            <button id="retryLeaderboard" class="btn btn-secondary">Retry</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
+    <script src="leaderboard.js"></script>
     <script src="app.js"></script>
 </body>
 </html>
