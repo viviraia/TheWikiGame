@@ -2,15 +2,15 @@ const fs = require('fs');
 const path = require('path');
 const https = require('https');
 
-// Extract page arrays from app.js
+// Extract page arrays from pages.js (ES6 module format)
 function extractPageArrays() {
-    const appJsPath = path.join(__dirname, '../../app.js');
-    const content = fs.readFileSync(appJsPath, 'utf8');
+    const pagesJsPath = path.join(__dirname, '../../src/js/data/pages.js');
+    const content = fs.readFileSync(pagesJsPath, 'utf8');
     
-    // Extract popularPages array
-    const popularMatch = content.match(/const popularPages = \[([\s\S]*?)\];/);
-    const obscureMatch = content.match(/const obscurePages = \[([\s\S]*?)\];/);
-    const ultraObscureMatch = content.match(/const ultraObscurePages = \[([\s\S]*?)\];/);
+    // Extract popularPages array (ES6 export format)
+    const popularMatch = content.match(/export const popularPages = \[([\s\S]*?)\];/);
+    const obscureMatch = content.match(/export const obscurePages = \[([\s\S]*?)\];/);
+    const ultraObscureMatch = content.match(/export const ultraObscurePages = \[([\s\S]*?)\];/);
     
     function extractPages(match) {
         if (!match) return [];

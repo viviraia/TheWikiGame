@@ -10,9 +10,12 @@ A Progressive Web App (PWA) where players navigate from one Wikipedia page to an
 - ⏱️ Track clicks and time with intelligent difficulty calculation
 - 🎯 Multiple difficulty modes (Normal, Hard, Ultra)
 - 📊 View top players worldwide
-- 🧠 Wikipedia API integration for accurate categorization
+- 🧠 **Real-time difficulty scoring** using Wikipedia API (pageviews + backlinks)
+- 🔗 **Connectivity-based page selection** for balanced gameplay
+- � **Curated content from Wikipedia Vital Articles** (~10,000 quality articles)
+- 🎯 **Progressive difficulty**: Easy (1,000), Hard (6,300), Ultra (2,700) pages
 - 🌙 Beautiful, modern UI with smooth animations
-- ⚡ Fast and responsive
+- ⚡ Fast and responsive with intelligent caching
 
 ## 🚀 Quick Start
 
@@ -50,6 +53,8 @@ npm test
 - **[Setup Guide](docs/SETUP.md)** - Configure the global leaderboard system
 - **[Testing Guide](docs/TESTING.md)** - Run and write tests
 - **[API Integration](docs/API_INTEGRATION.md)** - Wikipedia API usage details
+- **[Difficulty Scoring](docs/DIFFICULTY_SCORING.md)** - Real-time scoring system explained
+- **[Hybrid Approach](docs/HYBRID_APPROACH.md)** - Page selection methodology
 
 ## 🛠️ Technical Stack
 
@@ -63,19 +68,35 @@ npm test
 
 ## 🎯 Game Modes
 
-- **Normal Mode** (649 pages) - 95% popular topics, 1.0x multiplier
-- **Hard Mode** (1,227 pages) - 80% obscure topics, 1.5x multiplier
-- **Ultra Hard Mode** (1,600+ pages) - 80% ultra-obscure academic topics, 2.0x multiplier
+Pages are automatically selected and categorized based on **real Wikipedia data**:
+
+- **Normal Mode** (~1,200 pages) - Top 40% by popularity + connectivity, 1.0x base difficulty
+- **Hard Mode** (~900 pages) - Middle 30% by combined metrics, 1.5-2.5x difficulty  
+- **Ultra Hard Mode** (~900 pages) - Bottom 30% (obscure pages), 2.5-4.0x difficulty
+
+Page difficulty is calculated in real-time using:
+- **Pageviews API** - How popular the page is (last 30 days)
+- **Backlinks API** - How many pages link to it (connectivity)
 
 ## 📊 Intelligent Difficulty System
 
-The game uses the **Wikipedia MediaWiki API** to fetch real category data:
-- 13 smart categories (Geography, History, Science, People, etc.)
-- Accurate difficulty calculation based on page relationships
-- Automatic fallback to keyword matching if API fails
-- <1 second performance impact at game start
+The game uses **real-time Wikipedia API data** for accurate scoring:
 
-See [API Integration docs](docs/API_INTEGRATION.md) for details.
+### Real-Time Scoring (Default)
+- Fetches live pageview statistics (30-day average)
+- Counts incoming backlinks (connectivity metric)
+- Combines metrics: `difficulty = 7 - (log10(views) + log10(backlinks))`
+- Results cached for 1 hour to optimize performance
+- Difficulty range: 1.0 (very easy) to 4.0 (very hard)
+
+### Page Generation
+Run `npm run generate:pages` to create fresh page lists:
+- Fetches top 3000 Wikipedia pages by views
+- Enriches with backlink counts for each page
+- Sorts by combined popularity + connectivity score
+- Creates balanced difficulty tiers automatically
+
+See [docs/DIFFICULTY_SCORING.md](docs/DIFFICULTY_SCORING.md) for detailed explanation.
 
 ## 🏆 Leaderboard Setup
 
@@ -131,6 +152,9 @@ npm run test:unit          # Unit tests
 npm run test:integration   # Integration tests
 npm run test:e2e          # End-to-end tests
 
+# Test Wikipedia API connectivity
+npm run test:connectivity  # Test pageviews & backlinks APIs
+
 # Watch mode
 npm run test:watch
 
@@ -144,10 +168,42 @@ See [docs/TESTING.md](docs/TESTING.md) for detailed testing guide.
 
 ## 🔧 Customization
 
-### Add More Pages
-Edit `src/js/app.js` and modify the page arrays:
+### Page Generation
+Run `npm run generate:pages` to create fresh page lists:
+- Fetches top 3000 Wikipedia pages using **Hybrid Approach**:
+  - 73% from Pageviews API (popular, trending)
+  - 17% from Vital Articles (curated, important)
+  - 10% from diverse categories (topic balance)
+- Gets backlink counts for connectivity analysis
+- Sorts by combined popularity + connectivity
+- Generates `src/js/data/pages.js` with three difficulty tiers
+- Creates statistics in `src/js/data/page-stats.json`
+
+**Note:** This takes ~5-12 minutes due to API rate limiting.
+
+### Customize Page Selection
+
+Edit `scripts/generate-popular-pages.js`:
+
 ```javascript
-const popularPages = [
+const CONFIG = {
+    TARGET_PAGES: 3000,         // Number of pages to fetch
+    DAYS_TO_FETCH: 30,          // Days of pageview data
+    FETCH_CONNECTIVITY: true,    // Include backlink analysis
+    DELAY_MS: 100,              // API rate limiting delay
+    // ... more options
+};
+```
+
+### Adjust Difficulty Tiers
+
+Modify tier percentages in `generate-popular-pages.js`:
+
+```javascript
+const normalModePages = pageNames.slice(0, Math.floor(CONFIG.TARGET_PAGES * 0.4));  // 40%
+const hardModePages = pageNames.slice(/* 40-70% */);
+const ultraModePages = pageNames.slice(/* 70-100% */);
+```
     "Your_Topic_Here",
     "Another_Topic",
     // ... add more

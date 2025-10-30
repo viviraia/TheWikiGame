@@ -16,6 +16,22 @@ class WikiGame {
         this.ui = new UIController();
         this.pageSelector = new PageSelector();
         this.leaderboard = new LeaderboardManager();
+        this.articleHints = null;
+        this.loadArticleHints();
+    }
+
+    /**
+     * Load article hints data
+     */
+    async loadArticleHints() {
+        try {
+            const response = await fetch('src/js/data/article-hints.json');
+            this.articleHints = await response.json();
+            console.log('Article hints loaded successfully');
+        } catch (error) {
+            console.error('Failed to load article hints:', error);
+            this.articleHints = { level4: {}, level5: {} };
+        }
     }
 
     /**
@@ -40,6 +56,7 @@ class WikiGame {
         this.ui.elements.playAgainBtn?.addEventListener('click', () => this.startNewGame());
         this.ui.elements.backBtn?.addEventListener('click', () => this.goBack());
         this.ui.elements.giveUpBtn?.addEventListener('click', () => this.giveUp());
+        this.ui.elements.hintBtn?.addEventListener('click', () => this.showHint());
         
         // Modal controls
         this.ui.elements.instructionsBtn?.addEventListener('click', () => this.ui.showModal('instructions'));
@@ -52,6 +69,7 @@ class WikiGame {
         this.ui.elements.gameModeSelect?.addEventListener('change', (e) => {
             this.gameState.setMode(e.target.value);
             this.ui.updateGameModeLabel(e.target.value);
+            this.updateModeDescription(e.target.value);
         });
         
         // Leaderboard submission
@@ -93,6 +111,13 @@ class WikiGame {
             canGoBack: false,
             formattedTime: '00:00'
         });
+        
+        // Show hint button for hard/ultra modes
+        if (mode === 'hard' || mode === 'ultra') {
+            this.ui.showHintButton();
+        } else {
+            this.ui.hideHintButton();
+        }
         
         // Load starting page
         setTimeout(async () => {
@@ -268,16 +293,17 @@ class WikiGame {
             );
             
             if (result.success) {
-                const difficultyText = result.entry.difficulty >= 2.5 ? 'Very Hard ⭐⭐⭐⭐' :
-                                       result.entry.difficulty >= 2.0 ? 'Hard ⭐⭐⭐' :
-                                       result.entry.difficulty >= 1.5 ? 'Medium ⭐⭐' : 'Easy ⭐';
+                const difficultyText = result.entry.difficulty >= 2.5 ? 'Very Hard' :
+                                       result.entry.difficulty >= 2.0 ? 'Hard' :
+                                       result.entry.difficulty >= 1.5 ? 'Medium' : 
+                                       result.entry.difficulty >= 1.0 ? 'Easy' : 'Very Easy';
                 
-                const modeText = stats.mode === 'ultra' ? '\nMode: ⚡ ULTRA HARD MODE' :
-                                 stats.mode === 'hard' ? '\nMode: 🔥 HARD MODE' : '\nMode: Normal';
+                const modeText = stats.mode === 'ultra' ? '\nMode: ULTRA HARD MODE' :
+                                 stats.mode === 'hard' ? '\nMode: HARD MODE' : '\nMode: Normal';
                 
                 this.ui.showAlert(
                     '🎉 Score Submitted!',
-                    `Rank: #${result.rank}\nScore: ${result.entry.score} points\nDifficulty: ${difficultyText}\n${result.entry.clicks} clicks in ${GameState.formatTime(result.entry.time)}${modeText}`
+                    `Rank: #${result.rank}\nScore: ${result.entry.score} points\nDifficulty: ${difficultyText} (${result.entry.difficulty.toFixed(2)})\n${result.entry.clicks} clicks in ${GameState.formatTime(result.entry.time)}${modeText}`
                 );
                 
                 this.ui.updateSubmitButton('submitted');
@@ -337,8 +363,8 @@ class WikiGame {
         // Update title
         const title = document.querySelector('#leaderboardModal h2');
         if (title) {
-            title.textContent = mode === 'ultra' ? '⚡ Ultra Hard Mode Leaderboard' :
-                               mode === 'hard' ? '🔥 Hard Mode Leaderboard' :
+            title.textContent = mode === 'ultra' ? 'Ultra Hard Mode Leaderboard' :
+                               mode === 'hard' ? 'Hard Mode Leaderboard' :
                                '🏆 Normal Mode Leaderboard';
         }
         
@@ -357,9 +383,9 @@ class WikiGame {
             const rank = index + 1;
             const rankClass = rank <= 3 ? `rank-${rank}` : 'rank-other';
             const difficulty = entry.difficulty || 1.5;
-            const difficultyLabel = difficulty >= 2.5 ? '⭐⭐⭐⭐' :
-                                   difficulty >= 2.0 ? '⭐⭐⭐' :
-                                   difficulty >= 1.5 ? '⭐⭐' : '⭐';
+            const difficultyLabel = difficulty >= 2.5 ? '4*' :
+                                   difficulty >= 2.0 ? '3*' :
+                                   difficulty >= 1.5 ? '2*' : '1*';
             
             const row = document.createElement('tr');
             row.innerHTML = `
@@ -373,6 +399,49 @@ class WikiGame {
             `;
             tbody.appendChild(row);
         });
+    }
+
+    /**
+     * Show hint for current target page
+     */
+    showHint() {
+        if (!this.articleHints) {
+            this.ui.showHintMessage('⚠️ Hints are not available yet. Please try again in a moment.');
+            return;
+        }
+        
+        const targetPage = this.gameState.targetPage.replace(/ /g, '_');
+        const mode = this.gameState.mode;
+        
+        let category = null;
+        if (mode === 'hard' && this.articleHints.level4) {
+            category = this.articleHints.level4[targetPage];
+        } else if (mode === 'ultra' && this.articleHints.level5) {
+            category = this.articleHints.level5[targetPage];
+        }
+        
+        if (category) {
+            this.ui.showHintMessage(`💡 <strong>Hint:</strong> The target article "<strong>${this.gameState.targetPage}</strong>" belongs to the <strong>${category}</strong> category.`);
+        } else {
+            this.ui.showHintMessage('❓ Sorry, no hint available for this article.');
+        }
+    }
+
+    /**
+     * Update mode description text
+     * @param {string} mode - Game mode (normal, hard, ultra)
+     */
+    updateModeDescription(mode) {
+        const descriptionEl = document.getElementById('modeDescription');
+        if (!descriptionEl) return;
+        
+        const descriptions = {
+            normal: 'Normal: Most popular Wikipedia topics (Levels 1-3). Great for beginners!',
+            hard: 'Hard: More obscure topics (Level 4). 1.5x score multiplier. Challenge yourself!',
+            ultra: 'Ultra: Ultra-obscure academic topics (Level 5). 2x score multiplier. For experts only!'
+        };
+        
+        descriptionEl.textContent = descriptions[mode] || descriptions.normal;
     }
 
     /**

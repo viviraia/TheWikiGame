@@ -38,6 +38,8 @@ export class UIController {
         this.elements.gameModeSelect = document.getElementById('gameModeSelect');
         this.elements.gameModeLabel = document.getElementById('gameModeLabel');
         this.elements.playerNameInput = document.getElementById('playerNameInput');
+        this.elements.hintBtn = document.getElementById('hintBtn');
+        this.elements.hintMessage = document.getElementById('hintMessage');
 
         // Modals
         this.modals.instructions = document.getElementById('instructionsModal');
@@ -136,12 +138,12 @@ export class UIController {
         
         switch (mode) {
             case 'ultra':
-                this.elements.gameModeLabel.textContent = '⚡ ULTRA HARD MODE';
-                this.elements.gameModeLabel.style.color = '#9333ea';
+                this.elements.gameModeLabel.textContent = 'ULTRA HARD MODE';
+                this.elements.gameModeLabel.style.color = '#000000ff';
                 this.elements.gameModeLabel.style.fontWeight = '700';
                 break;
             case 'hard':
-                this.elements.gameModeLabel.textContent = '🔥 HARD MODE';
+                this.elements.gameModeLabel.textContent = 'HARD MODE';
                 this.elements.gameModeLabel.style.color = '#ff6b6b';
                 this.elements.gameModeLabel.style.fontWeight = '600';
                 break;
@@ -301,6 +303,48 @@ export class UIController {
      */
     getSelectedMode() {
         return this.elements.gameModeSelect?.value || 'normal';
+    }
+
+    /**
+     * Show hint button for hard/ultra modes
+     */
+    showHintButton() {
+        if (this.elements.hintBtn) {
+            this.elements.hintBtn.style.display = 'block';
+        }
+    }
+
+    /**
+     * Hide hint button
+     */
+    hideHintButton() {
+        if (this.elements.hintBtn) {
+            this.elements.hintBtn.style.display = 'none';
+        }
+        this.hideHintMessage();
+    }
+
+    /**
+     * Display hint message
+     * @param {string} message - Hint message to display
+     */
+    showHintMessage(message) {
+        if (this.elements.hintMessage) {
+            this.elements.hintMessage.innerHTML = message;
+            this.elements.hintMessage.style.display = 'block';
+        }
+        if (this.elements.hintBtn) {
+            this.elements.hintBtn.disabled = true;
+        }
+    }
+
+    /**
+     * Hide hint message
+     */
+    hideHintMessage() {
+        if (this.elements.hintMessage) {
+            this.elements.hintMessage.style.display = 'none';
+        }
     }
 
     /**

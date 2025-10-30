@@ -32,14 +32,24 @@ export class LeaderboardManager {
      * @param {string} targetPage - Target page
      * @param {number} clicks - Number of clicks
      * @param {number} timeInSeconds - Time in seconds
-     * @param {string} gameMode - Game mode
+     * @param {string} gameMode - Game mode (normal, hard, ultra)
      * @param {boolean} useAPI - Use Wikipedia API for scoring
      * @returns {Promise<Object>} - Result with success status
      */
     async submitScore(playerName, startPage, targetPage, clicks, timeInSeconds, gameMode = 'normal', useAPI = true) {
         try {
-            const score = await this.scoringSystem.calculateScore(clicks, timeInSeconds, startPage, targetPage, useAPI);
+            // Calculate base score
+            const baseScore = await this.scoringSystem.calculateScore(clicks, timeInSeconds, startPage, targetPage, useAPI);
             const difficulty = await this.scoringSystem.estimateDifficulty(startPage, targetPage, useAPI);
+            
+            // Apply game mode multiplier
+            const modeMultipliers = {
+                normal: 1.0,
+                hard: 1.5,
+                ultra: 2.0
+            };
+            const multiplier = modeMultipliers[gameMode] || 1.0;
+            const score = Math.round(baseScore * multiplier);
             
             const entry = {
                 playerName,

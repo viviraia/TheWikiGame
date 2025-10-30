@@ -12,6 +12,11 @@
     "test:unit": "jest tests/unit",
     "test:integration": "jest tests/integration",
     "test:e2e": "playwright test",
+    "test:connectivity": "node scripts/test-connectivity.js",
+    "generate:pages": "node scripts/generate-popular-pages.js",
+    "fetch:vital": "node scripts/fetch-vital-articles.js",
+    "generate:pages-vital": "node scripts/generate-pages-from-vital.js",
+    "generate:hints": "node scripts/generate-article-hints.js",
     "lint": "echo 'Linting not configured yet'",
     "format": "echo 'Formatting not configured yet'"
   },
