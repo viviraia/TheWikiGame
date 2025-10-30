@@ -54,6 +54,7 @@ class WikiGame {
         // Game controls
         this.ui.elements.startGameBtn?.addEventListener('click', () => this.startNewGame());
         this.ui.elements.playAgainBtn?.addEventListener('click', () => this.startNewGame());
+        this.ui.elements.homeBtn?.addEventListener('click', () => this.goToHome());
         this.ui.elements.backBtn?.addEventListener('click', () => this.goBack());
         this.ui.elements.giveUpBtn?.addEventListener('click', () => this.giveUp());
         this.ui.elements.hintBtn?.addEventListener('click', () => this.toggleHint());
@@ -254,6 +255,14 @@ class WikiGame {
             this.gameState.setState('welcome');
             this.ui.showScreen('welcome');
         }, 2000);
+    }
+
+    /**
+     * Return to home screen
+     */
+    goToHome() {
+        this.gameState.setState('welcome');
+        this.ui.showScreen('welcome');
     }
 
     /**

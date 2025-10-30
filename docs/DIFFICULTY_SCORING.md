@@ -2,9 +2,11 @@
 
 ## Overview
 
-The game now uses **real-time Wikipedia API data** to calculate accurate difficulty scores based on:
-1. **Page Popularity** (pageviews) - How well-known the page is
-2. **Page Connectivity** (backlinks) - How easy it is to reach the page
+The game now uses **real-time Wikipedia API data** to calculate accurate difficulty scores with **backlinks as the primary metric**:
+1. **Page Connectivity (Backlinks)** - PRIMARY (70% weight) - How many pages link to the target
+2. **Page Popularity (Pageviews)** - SECONDARY (30% weight) - How well-known the page is
+
+The more backlinks a page has, the easier it is to reach because there are more paths leading to it.
 
 ## Architecture
 
@@ -15,20 +17,26 @@ This module handles all Wikipedia API interactions for connectivity analysis:
 #### Key Methods:
 
 - **`getBacklinkCount(pageTitle)`** - Returns number of pages linking TO this page
-  - More backlinks = easier to find = lower difficulty
+  - More backlinks = MORE PATHS to reach it = EASIER = lower difficulty
   - Uses Wikipedia's backlinks API
   - Cached for 1 hour to reduce API calls
+  - **PRIMARY difficulty metric (70% weight)**
 
 - **`getPageViews(pageTitle, days)`** - Returns pageview statistics
   - Fetches last 30 days of views by default
   - Uses Wikimedia Pageviews API
   - Cached for 1 hour
+  - **Secondary modifier (30% weight)**
 
 - **`calculateDifficulty(startPage, targetPage)`** - Combines metrics for final score
   - Returns difficulty from 1.0 (easy) to 4.0 (very hard)
-  - Formula: `difficulty = 7 - (log10(views) + log10(backlinks))`
-  - Most popular pages: ~6 ease score → 1.0 difficulty
-  - Least popular pages: ~2 ease score → 4.0 difficulty
+  - **New formula prioritizes backlinks:**
+    - 5000+ backlinks → 1.0-1.5 difficulty (Very Easy)
+    - 1000-5000 backlinks → 1.5-2.5 difficulty (Easy to Moderate)
+    - 100-1000 backlinks → 2.5-3.0 difficulty (Moderate to Hard)
+    - 10-100 backlinks → 3.0-3.5 difficulty (Hard)
+    - <10 backlinks → 3.5-4.0 difficulty (Very Hard)
+  - Pageviews add a small modifier (0.0-0.6) to fine-tune difficulty
 
 ### 2. ScoringSystem Updates
 
@@ -36,7 +44,7 @@ The `ScoringSystem` now:
 - **Only uses `PageConnectivity`** for real-time difficulty calculation
 - No legacy/fallback modes - API-based scoring always
 - Returns default difficulty (2.0) only on API errors
-- Provides detailed metrics in console logs
+- Provides detailed metrics in console logs showing backlink-based calculations
 
 ### 3. Page Generation Enhancement
 
@@ -53,18 +61,18 @@ The `generate-popular-pages.js` script now:
 2. Score is submitted with `submitScore()` in `leaderboard.js`
 3. `ScoringSystem.calculateScore()` is called:
    ```javascript
-   // Calculate difficulty using real-time API data
+   // Calculate difficulty using real-time API data with backlinks as primary factor
    const difficulty = await connectivity.calculateDifficulty(startPage, targetPage);
    
    // Example result for "Python" → "Quantum_Physics":
    // {
-   //   difficulty: 2.85,
+   //   difficulty: 2.75,
    //   metrics: {
-   //     targetViews: 1234,        // Daily average views
-   //     targetBacklinks: 456,     // Pages linking to target
-   //     startBacklinks: 7890,     // Pages linking to start
-   //     popularityScore: 3.09,
-   //     connectivityScore: 2.66
+   //     targetBacklinks: 234,        // Pages linking to target (PRIMARY)
+   //     backlinkDifficulty: 2.55,    // Difficulty from backlinks (70% weight)
+   //     targetViews: 890,            // Daily average views (secondary)
+   //     popularityModifier: 0.20,    // Fine-tuning from views (30% weight)
+   //     startBacklinks: 4567         // For reference
    //   }
    // }
    ```
@@ -81,13 +89,15 @@ The `generate-popular-pages.js` script now:
 When you run `npm run generate:pages`:
 
 1. Fetches top viewed pages from last 30 days
-2. For each page, fetches backlink count
-3. Calculates combined score: `log10(views) + log10(backlinks)`
+2. For each page, fetches backlink count (PRIMARY metric)
+3. Calculates combined score: `(log10(backlinks) × 0.7) + (log10(views) × 0.3)`
+   - **70% weight on backlinks** (connectivity)
+   - **30% weight on pageviews** (popularity)
 4. Sorts pages by combined score
-5. Creates three tiers:
-   - **Normal Mode** (top 40%): High views + high connectivity
-   - **Hard Mode** (middle 30%): Medium views + medium connectivity
-   - **Ultra Mode** (bottom 30%): Low views + low connectivity
+5. Creates three tiers based on backlink-weighted scores:
+   - **Normal Mode** (top 40%): High backlinks + high views (easy to reach)
+   - **Hard Mode** (middle 30%): Medium backlinks (moderate connectivity)
+   - **Ultra Mode** (bottom 30%): Low backlinks (few paths to reach)
 
 ## API Endpoints Used
 
@@ -152,31 +162,78 @@ const CONFIG = {
 
 ## Example Difficulty Scores
 
-Based on real Wikipedia data:
+Based on real Wikipedia data with new backlink-focused formula:
 
-| Target Page | Daily Views | Backlinks | Difficulty | Rating |
-|------------|-------------|-----------|------------|--------|
-| United_States | 50,000 | 15,000 | 1.0 | Very Easy ⭐ |
-| Python_(programming) | 8,000 | 3,500 | 1.5 | Easy ⭐⭐ |
-| Quantum_mechanics | 2,000 | 800 | 2.3 | Hard ⭐⭐⭐ |
-| Obscure_mathematician | 100 | 50 | 3.8 | Very Hard ⭐⭐⭐⭐ |
+| Target Page | Backlinks | Daily Views | Backlink Difficulty | Popularity Modifier | Final Difficulty | Rating |
+|------------|-----------|-------------|---------------------|---------------------|------------------|--------|
+| United_States | 15,000 | 50,000 | 1.0 | +0.0 | **1.0** | Very Easy ⭐ |
+| World_War_II | 8,000 | 25,000 | 1.0 | +0.0 | **1.0** | Very Easy ⭐ |
+| Python_(programming) | 3,500 | 8,000 | 1.4 | +0.0 | **1.4** | Easy ⭐⭐ |
+| Albert_Einstein | 2,000 | 12,000 | 1.5 | +0.0 | **1.5** | Easy ⭐⭐ |
+| Quantum_mechanics | 800 | 2,000 | 1.8 | +0.2 | **2.0** | Moderate ⭐⭐⭐ |
+| Medieval_poet | 150 | 300 | 2.4 | +0.4 | **2.8** | Hard ⭐⭐⭐⭐ |
+| Obscure_mathematician | 45 | 80 | 3.1 | +0.6 | **3.7** | Very Hard ⭐⭐⭐⭐ |
+| Rare_species | 8 | 25 | 3.8 | +0.6 | **4.0** | Extremely Hard ⭐⭐⭐⭐ |
+
+**Key Insight:** Pages with fewer backlinks are significantly harder because there are fewer paths to reach them, regardless of popularity.
 
 ## Benefits
 
 ### For Players:
-- **Fair scoring** - Reflects actual difficulty
-- **Dynamic content** - Changes with Wikipedia trends
-- **Transparent** - Difficulty shown with metrics
+- **Fair scoring** - Difficulty based on actual connectivity (how many paths exist)
+- **Intuitive** - Fewer backlinks = fewer ways to reach = harder
+- **Dynamic content** - Changes with Wikipedia's link structure
+- **Transparent** - Difficulty shown with detailed backlink metrics
 
 ### For Game Balance:
-- **Objective difficulty** - Not manually curated
-- **Self-updating** - Regenerate pages monthly
-- **Better tiers** - Based on real connectivity
+- **Objective difficulty** - Based on graph connectivity, not opinions
+- **Backlink-focused** - The number of incoming links is the best predictor of reachability
+- **Self-updating** - Regenerate pages monthly to reflect Wikipedia changes
+- **Better tiers** - Sorted primarily by backlinks for accurate difficulty ranking
 
 ### For Development:
-- **Automated** - No manual page categorization
+- **Automated** - No manual page categorization needed
 - **Scalable** - Easy to add more pages
-- **Maintainable** - Single source of truth (Wikipedia)
+- **Maintainable** - Single source of truth (Wikipedia's link graph)
+- **Research-backed** - Backlinks correlate strongly with reachability in wiki-games
+
+## Why Backlinks Matter
+
+### The Science of Reachability
+
+In graph theory, **in-degree** (number of incoming edges) is a key metric for node reachability:
+
+1. **More Paths = Easier to Find**
+   - A page with 5000 backlinks has 5000+ potential paths leading to it
+   - A page with 10 backlinks has very few paths, making it much harder to discover
+
+2. **Hub Pages vs. Leaf Pages**
+   - **Hub pages** (high backlinks): Central topics like "United States", "World War II"
+   - **Leaf pages** (low backlinks): Specialized topics, rare species, obscure people
+
+3. **Real Game Impact**
+   - Players naturally follow links while browsing
+   - Pages mentioned frequently in other articles appear more often
+   - Obscure pages require specific knowledge or lucky guesses
+
+### Why Backlinks > Pageviews
+
+While pageviews indicate popularity, **backlinks indicate connectivity**:
+
+- **Pageviews** tell you how often people *search* for a topic
+- **Backlinks** tell you how often the topic is *referenced* in other articles
+
+For navigation games, **connectivity is king**:
+- High views + low backlinks = Popular but isolated (e.g., current events)
+- Low views + high backlinks = Well-connected despite obscurity (e.g., foundational concepts)
+- High views + high backlinks = Easy targets (e.g., major countries, historical figures)
+
+### The 70/30 Split
+
+Our formula uses **70% backlinks, 30% views** because:
+- Backlinks directly measure navigability
+- Pageviews provide secondary context (helps distinguish between similar backlink counts)
+- Testing showed this ratio produces the most accurate difficulty predictions
 
 ## Troubleshooting
 

@@ -23,6 +23,7 @@ export class UIController {
         this.elements.startGameBtn = document.getElementById('startGameBtn');
         this.elements.instructionsBtn = document.getElementById('instructionsBtn');
         this.elements.playAgainBtn = document.getElementById('playAgainBtn');
+        this.elements.homeBtn = document.getElementById('homeBtn');
         this.elements.backBtn = document.getElementById('backBtn');
         this.elements.giveUpBtn = document.getElementById('giveUpBtn');
         this.elements.leaderboardBtn = document.getElementById('leaderboardBtn');

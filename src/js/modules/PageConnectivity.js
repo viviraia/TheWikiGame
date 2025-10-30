@@ -243,6 +243,7 @@ export class PageConnectivity {
     /**
      * Batch fetch connectivity data for multiple pages
      * Used during page selection/generation
+     * Prioritizes backlinks as the primary metric
      */
     async batchGetConnectivity(pageNames) {
         const results = [];
@@ -257,11 +258,16 @@ export class PageConnectivity {
                         this.getBacklinkCount(pageName)
                     ]);
                     
+                    // Calculate score with backlinks weighted at 70%, views at 30%
+                    const backlinkScore = Math.log10(backlinks.estimatedTotal + 10) * 0.7;
+                    const viewScore = Math.log10(views.average + 10) * 0.3;
+                    const combinedScore = backlinkScore + viewScore;
+                    
                     return {
                         page: pageName,
                         views: views.average,
                         backlinks: backlinks.estimatedTotal,
-                        score: Math.log10(views.average + 10) + Math.log10(backlinks.estimatedTotal + 10)
+                        score: combinedScore
                     };
                 })
             );

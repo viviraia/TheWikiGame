@@ -59,8 +59,10 @@ export class ScoringSystem {
             
             console.log(`Difficulty calculation for ${startPage} → ${targetPage}:`, {
                 difficulty: result.difficulty,
+                targetBacklinks: result.metrics.targetBacklinks,
+                backlinkDifficulty: result.metrics.backlinkDifficulty,
                 targetViews: result.metrics.targetViews,
-                targetBacklinks: result.metrics.targetBacklinks
+                popularityModifier: result.metrics.popularityModifier
             });
             
             return result.difficulty;
