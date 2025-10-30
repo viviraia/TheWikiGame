@@ -2,7 +2,7 @@
   "name": "The Wiki Game",
   "short_name": "Wiki Game",
   "description": "Navigate from one Wikipedia page to another using only article links!",
-  "start_url": "/",
+  "start_url": "./",
   "display": "standalone",
   "background_color": "#6366f1",
   "theme_color": "#6366f1",

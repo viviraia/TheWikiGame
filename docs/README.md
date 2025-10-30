@@ -1,253 +1,183 @@
-# The Wiki Game
+# The Wiki Game - Documentation
 
-A Progressive Web App (PWA) where players navigate from one Wikipedia page to another using only article links. Compete globally on the leaderboard!
+A Progressive Web App (PWA) where players navigate from one Wikipedia page to another using only article links.
 
-## ✨ Features
+## 📚 Documentation Overview
 
-- 🎮 Navigate Wikipedia using only article links
-- 🏆 Global leaderboard system
-- 📱 Installable as mobile/desktop app (PWA)
-- ⏱️ Track clicks and time
-- 🎯 Random page challenges
-- 📊 View top players worldwide
-- 🌙 Beautiful, modern UI
-- ⚡ Fast and responsive
+This folder contains all technical documentation for The Wiki Game project.
+
+### Core Documentation
+
+- **[ARCHITECTURE.md](ARCHITECTURE.md)** - System architecture and module organization
+- **[API_INTEGRATION.md](API_INTEGRATION.md)** - Wikipedia API integration details
+- **[DIFFICULTY_SCORING.md](DIFFICULTY_SCORING.md)** - Real-time difficulty scoring system
+- **[SETUP.md](SETUP.md)** - Leaderboard and deployment setup guide
+- **[TESTING.md](TESTING.md)** - Testing guide and coverage information
+- **[QUICK_REFERENCE.md](QUICK_REFERENCE.md)** - Quick reference for common tasks
 
 ## Quick Start
 
-### Option 1: Open Locally (Simple)
+### For Users
 
-Open `index.html` directly in your browser
+Simply open `index.html` in your browser to play!
 
-## Install as Mobile App
+### Install as App (PWA)
 
-### On iPhone/iPad:
-1. Open the game in Safari
-2. Tap the Share button (square with arrow)
-3. Scroll down and tap "Add to Home Screen"
-4. Tap "Add"
-5. The game icon will appear on your home screen!
+**On iPhone/iPad:**
+1. Open in Safari → Share button → "Add to Home Screen"
 
-### On Android:
-1. Open the game in Chrome
-2. Tap the menu (three dots)
-3. Tap "Add to Home Screen" or "Install app"
-4. Tap "Add" or "Install"
-5. The game icon will appear on your home screen!
+**On Android:**
+1. Open in Chrome → Menu (⋮) → "Add to Home Screen"
 
-### On Windows:
-1. Open the game in Chrome or Edge
-2. Click the install icon ( + or computer icon) in the address bar
-3. Click "Install"
+**On Desktop:**
+1. Open in Chrome/Edge → Install icon in address bar → "Install"
 
-### On Mac:
-1. Open the game in Chrome or Safari
-2. Click the install icon in the address bar
-3. Click "Install"
+## 🎮 How to Play
 
-## How to Play
-
-1. **Start Game** - Begin with random Wikipedia pages
-2. **Navigate** - Click only on links within articles
+1. **Start** - Click "Start Game" to begin with random Wikipedia pages
+2. **Navigate** - Click only on links within articles to navigate
 3. **Reach Target** - Find your way to the target page
-4. **Track Stats** - Monitor your clicks and time
-5. **Submit Score** - Add your score to the global leaderboard
+4. **Track Progress** - Monitor your clicks and time
+5. **Submit Score** - Add your score to the leaderboard
 6. **Compete** - Try to beat the top players!
 
-## 🏆 Leaderboard Setup
+## 🛠️ For Developers
 
-The game includes a global leaderboard system using GitHub Gist as a backend.
+### Quick Commands
 
-### Quick Setup (5 minutes):
-1. Create a GitHub Gist with filename `leaderboard.json` and content `{"entries": []}`
-2. Generate a GitHub token with `gist` scope
-3. Update `app.js` with your Gist ID and token
+```bash
+# Run tests
+npm test
 
-**Full instructions:** See `QUICK_SETUP.md` or `LEADERBOARD_SETUP.md`
+# Generate fresh page lists
+npm run generate:pages
 
-**Testing locally?** The game uses localStorage by default - no setup needed!
+# Test API connectivity
+npm run test:connectivity
 
-## Technical Details
-
-### Built With:
-- **HTML5** - Structure
-- **CSS3** - Styling with flexbox, animations
-- **JavaScript** - Game logic and Wikipedia API integration
-- **GitHub Gist** - Leaderboard backend
-- **Service Worker** - Offline support and PWA features
-- **JavaScript (Vanilla)** - No frameworks needed!
-- **PWA** - Progressive Web App features
-- **Service Worker** - Offline support and caching
-
-### Requirements:
-- Modern web browser (2020+)
-- Internet connection (for Wikipedia content)
-- JavaScript enabled
-
-
-## Game Features
-
-### Gameplay:
-- **45+ Wikipedia topics** for variety
-- **Smart navigation tracking** - Detects page changes
-- **Click counter** - Track your efficiency
-- **Timer** - Challenge yourself
-- **Back button** - Undo mistakes
-- **Hints** - Get helpful clues
-- **Win detection** - Automatic target recognition
-
-### UI/UX:
-- **Beautiful gradient backgrounds**
-- **Smooth animations**
-- **Responsive design** - Mobile-first approach
-- **Touch-friendly buttons**
-- **Clear game states** - Welcome, Loading, Playing, Won
-- **Modal dialogs** - Instructions, hints, alerts
-- **Menu system** - Easy navigation
-
-## 🔧 Customization
-
-### Add More Starting Pages:
-Edit `app.js` and modify the `popularPages` array:
-
-```javascript
-const popularPages = [
-    "Your_Topic_Here",
-    "Another_Topic",
-    // ... add more
-];
+# Start development server
+npm run dev
 ```
 
-### Change Colors:
-Edit `styles.css` and modify the CSS variables:
+### Project Structure
+
+```
+src/
+├── js/
+│   ├── data/
+│   │   ├── pages.js              # Wikipedia page lists
+│   │   └── vital-articles.json   # Curated vital articles
+│   ├── modules/
+│   │   ├── GameState.js          # Game state management
+│   │   ├── WikipediaAPI.js       # Wikipedia API wrapper
+│   │   ├── UIController.js       # UI updates
+│   │   ├── PageSelector.js       # Page selection logic
+│   │   ├── PageConnectivity.js   # Difficulty calculation
+│   │   └── ScoringSystem.js      # Score calculation
+│   ├── app.js                    # Main application
+│   ├── leaderboard.js            # Leaderboard manager
+│   └── service-worker.js         # PWA functionality
+└── css/
+    └── styles.css                # Styling
+```
+
+### Key Features
+
+- **10,000+ Wikipedia pages** from curated Vital Articles
+- **Real-time difficulty scoring** using Wikipedia API
+- **Three difficulty modes** - Normal, Hard, Ultra
+- **Progressive Web App** - Installable on any device
+- **Offline support** - Service worker caching
+- **Local leaderboard** - Browser localStorage
+- **Responsive design** - Mobile-first approach
+
+## 📖 Documentation Guide
+
+### Architecture & Design
+**[ARCHITECTURE.md](ARCHITECTURE.md)** - Learn about the modular architecture, data flow, and how components interact
+
+### API & Integration
+**[API_INTEGRATION.md](API_INTEGRATION.md)** - Understand Wikipedia API integration, category detection, and data fetching
+
+### Difficulty & Scoring
+**[DIFFICULTY_SCORING.md](DIFFICULTY_SCORING.md)** - Deep dive into real-time difficulty calculation using pageviews and backlinks
+
+### Setup & Deployment
+**[SETUP.md](SETUP.md)** - Complete guide for setting up GitHub Gist leaderboard and deploying to production
+
+### Testing
+**[TESTING.md](TESTING.md)** - Comprehensive testing guide covering unit, integration, and E2E tests
+
+### Quick Reference
+**[QUICK_REFERENCE.md](QUICK_REFERENCE.md)** - Quick commands and examples for common development tasks
+
+## 🔧 Configuration
+
+### Add Custom Pages
+
+Edit `src/js/data/pages.js` or regenerate from Wikipedia:
+
+```bash
+npm run fetch:vital        # Fetch from Wikipedia
+npm run generate:pages     # Generate pages.js
+```
+
+### Customize UI
+
+Edit CSS variables in `src/css/styles.css`:
 
 ```css
 :root {
-    --primary-color: #6366f1;  /* Change this */
-    --secondary-color: #8b5cf6; /* And this */
-    /* ... */
+    --primary-color: #6366f1;
+    --secondary-color: #8b5cf6;
 }
 ```
 
-### Adjust Difficulty:
-Edit `app.js` to change how pages are selected or add filtering logic.
+### Configure Leaderboard
 
-## 🐛 Known Issues & Limitations
-
-1. **Cross-Origin Restrictions**: 
-   - Due to browser security, we can't intercept clicks inside Wikipedia's iframe perfectly
-   - The game detects URL changes to track navigation
-   - Some clicks may not register immediately
-
-2. **Mobile Wikipedia**:
-   - Uses `en.m.wikipedia.org` for better mobile experience
-   - Some advanced features may not work on mobile version
-
-3. **External Links**:
-   - Links to external sites are blocked
-   - Only Wikipedia article links work
-
-## 🚀 Deployment Options
-
-### Deploy to Hosting:
-1. **GitHub Pages** (Free):
-   - Upload files to a GitHub repo
-   - Enable GitHub Pages in settings
-   - Access at: `https://username.github.io/repo-name/`
-
-2. **Netlify** (Free):
-   - Drag and drop the `web` folder to netlify.com
-   - Get instant HTTPS URL
-
-3. **Vercel** (Free):
-   - Upload to Vercel.com
-   - Automatic deployment
-
-4. **Any Web Host**:
-   - Upload all files via FTP
-   - Works on any static hosting
-
-## 📈 Future Improvements
-
-- [ ] Multiplayer mode
-- [ ] Daily challenges
-- [ ] Global leaderboards
-- [ ] Share results on social media
-- [ ] Different difficulty levels
-- [ ] Multiple language support
-- [ ] Dark mode toggle
-- [ ] Game history/statistics
-- [ ] Achievement system
-- [ ] Sound effects
-- [ ] Better Wikipedia integration
-- [ ] Tutorial mode
+See **[SETUP.md](SETUP.md)** for detailed leaderboard configuration.
 
 ## 🧪 Testing
 
-This project includes comprehensive tests covering all features.
-
-### Running Tests
-
 ```bash
-# Install dependencies
-npm install
-
-# Run all tests
-npm test
-
-# Run unit tests only
-npm run test:unit
-
-# Run integration tests
-npm run test:integration
-
-# Run E2E tests (requires local server)
-npm run test:e2e
-
-# Run tests in watch mode
-npm run test:watch
-
-# Generate coverage report
-npm test -- --coverage
+npm test              # Run all tests
+npm run test:unit     # Unit tests only
+npm run test:e2e      # E2E tests only
+npm run test:watch    # Watch mode
 ```
 
-### Test Coverage
+Current test coverage: 70%+ across all metrics.
 
-- **Unit Tests**: 150+ tests for leaderboard and game logic
-- **Integration Tests**: 40+ tests for game-leaderboard interaction
-- **E2E Tests**: 50+ tests for complete user workflows
+## 🚀 Deployment
 
-For detailed testing documentation, see [TESTING.md](TESTING.md)
+### GitHub Pages
+1. Push code to GitHub repository
+2. Enable GitHub Pages in repository settings
+3. Access at `https://username.github.io/repo-name/`
 
-## 💡 Tips for Best Experience
+### Other Platforms
+- **Netlify** - Drag & drop deployment
+- **Vercel** - Git integration
+- **Any static host** - Upload files via FTP
 
-1. **Use a modern browser** (Chrome, Edge, Safari)
-2. **Run from a local server** for best compatibility
-3. **Install as PWA** on mobile for app-like experience
-4. **Good internet connection** for fast Wikipedia loading
-5. **Portrait mode** recommended on mobile
+## 📈 Performance
+
+- **Lightweight** - No framework dependencies
+- **Fast** - Vanilla JavaScript
+- **Cached** - Service worker for offline support
+- **Optimized** - Lazy loading and efficient DOM updates
 
 ## 🤝 Contributing
 
-Feel free to:
-- Report bugs
-- Suggest features
-- Submit improvements
-- Share with friends!
-
-**Before submitting PRs:**
-- Run tests: `npm test`
-- Ensure coverage remains above 70%
-- Add tests for new features
+1. Run tests before submitting: `npm test`
+2. Maintain test coverage above 70%
+3. Follow existing code style
+4. Add tests for new features
 
 ## 📄 License
 
 Free to use for personal and educational purposes.
 
-## 🎮 Have Fun!
-
-Enjoy exploring Wikipedia in a whole new way! 🌐📚
-
 ---
 
-**Made with ❤️ for curious minds everywhere!**
+**Made with Love**

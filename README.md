@@ -225,14 +225,38 @@ Edit `src/js/leaderboard.js` to modify the score calculation formula.
 ## 🚀 Deployment
 
 ### GitHub Pages (Recommended)
-1. Push code to GitHub repository
-2. Enable GitHub Pages in repo settings
-3. Access at: `https://username.github.io/repo-name/`
 
-### Other Options
-- **Netlify**: Drag & drop deployment
-- **Vercel**: Automatic deployment from Git
-- **Any Web Host**: Upload via FTP (static files)
+The game is fully configured for GitHub Pages deployment:
+
+1. **Push to GitHub:**
+   ```bash
+   git add .
+   git commit -m "Deploy to GitHub Pages"
+   git push origin main
+   ```
+
+2. **Enable GitHub Pages:**
+   - Go to your repository Settings
+   - Navigate to "Pages" section
+   - Under "Source", select branch: `main` (or `master`)
+   - Select folder: `/ (root)`
+   - Click "Save"
+
+3. **Access your game:**
+   - URL: `https://username.github.io/repository-name/`
+   - Wait 1-2 minutes for deployment to complete
+
+**✅ Already configured:**
+- `.nojekyll` file (allows all files to be served)
+- Relative paths in all files
+- Service worker with relative URLs
+- PWA manifest with relative start URL
+
+### Other Hosting Options
+- **Netlify**: Drag & drop the folder → Instant deployment
+- **Vercel**: Connect GitHub repo → Automatic deployment
+- **Cloudflare Pages**: Fast CDN with automatic builds
+- **Any Web Host**: Upload files via FTP (100% static)
 
 ## 💡 Tips for Best Experience
 

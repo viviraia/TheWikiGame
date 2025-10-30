@@ -7,7 +7,7 @@ import { GameState } from './modules/GameState.js';
 import { WikipediaAPI } from './modules/WikipediaAPI.js';
 import { UIController } from './modules/UIController.js';
 import { PageSelector } from './modules/PageSelector.js';
-import { LeaderboardManager } from './leaderboard-refactored.js';
+import { LeaderboardManager } from './leaderboard.js';
 
 class WikiGame {
     constructor() {
@@ -56,7 +56,7 @@ class WikiGame {
         this.ui.elements.playAgainBtn?.addEventListener('click', () => this.startNewGame());
         this.ui.elements.backBtn?.addEventListener('click', () => this.goBack());
         this.ui.elements.giveUpBtn?.addEventListener('click', () => this.giveUp());
-        this.ui.elements.hintBtn?.addEventListener('click', () => this.showHint());
+        this.ui.elements.hintBtn?.addEventListener('click', () => this.toggleHint());
         
         // Modal controls
         this.ui.elements.instructionsBtn?.addEventListener('click', () => this.ui.showModal('instructions'));
@@ -112,9 +112,23 @@ class WikiGame {
             formattedTime: '00:00'
         });
         
-        // Show hint button for hard/ultra modes
+        // Show hint button only if hint is available
+        this.ui.hideHintMessage(); // Hide any previous hint
         if (mode === 'hard' || mode === 'ultra') {
-            this.ui.showHintButton();
+            const targetPageKey = this.gameState.targetPage.replace(/ /g, '_');
+            const hasHint = this.articleHints && 
+                ((mode === 'hard' && this.articleHints.level4?.[targetPageKey]) ||
+                 (mode === 'ultra' && this.articleHints.level5?.[targetPageKey]));
+            
+            if (hasHint) {
+                this.ui.showHintButton();
+                // Reset button text to collapsed state
+                if (this.ui.elements.hintBtn) {
+                    this.ui.elements.hintBtn.textContent = '▶ Hint';
+                }
+            } else {
+                this.ui.hideHintButton();
+            }
         } else {
             this.ui.hideHintButton();
         }
@@ -424,6 +438,26 @@ class WikiGame {
             this.ui.showHintMessage(`💡 <strong>Hint:</strong> The target article "<strong>${this.gameState.targetPage}</strong>" belongs to the <strong>${category}</strong> category.`);
         } else {
             this.ui.showHintMessage('❓ Sorry, no hint available for this article.');
+        }
+    }
+
+    /**
+     * Toggle hint visibility (collapsible)
+     */
+    toggleHint() {
+        const hintMessage = this.ui.elements.hintMessage;
+        const hintBtn = this.ui.elements.hintBtn;
+        
+        if (!hintMessage || !hintBtn) return;
+        
+        // If hint is currently hidden, show it
+        if (hintMessage.style.display === 'none' || !hintMessage.style.display) {
+            this.showHint();
+            hintBtn.textContent = '▼ Hint';
+        } else {
+            // If hint is visible, hide it
+            this.ui.hideHintMessage();
+            hintBtn.textContent = '▶ Hint';
         }
     }
 

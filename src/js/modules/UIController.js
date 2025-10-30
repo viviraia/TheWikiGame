@@ -333,9 +333,6 @@ export class UIController {
             this.elements.hintMessage.innerHTML = message;
             this.elements.hintMessage.style.display = 'block';
         }
-        if (this.elements.hintBtn) {
-            this.elements.hintBtn.disabled = true;
-        }
     }
 
     /**

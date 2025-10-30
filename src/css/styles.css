@@ -218,8 +218,7 @@ body {
 }
 
 /* Hint Button and Message */
-.hint-btn {
-    margin-top: 1rem;
+.hint-btn-header {
     padding: 0.5rem 1rem;
     background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
     color: white;
@@ -230,18 +229,19 @@ body {
     cursor: pointer;
     transition: all 0.3s ease;
     box-shadow: 0 2px 4px rgba(251, 191, 36, 0.3);
+    margin-left: auto;
 }
 
-.hint-btn:hover {
+.hint-btn-header:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(251, 191, 36, 0.4);
 }
 
-.hint-btn:active {
+.hint-btn-header:active {
     transform: translateY(0);
 }
 
-.hint-btn:disabled {
+.hint-btn-header:disabled {
     opacity: 0.5;
     cursor: not-allowed;
     transform: none;
