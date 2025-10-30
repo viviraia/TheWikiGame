@@ -846,6 +846,57 @@ function getPagePool() {
     return popularPages;
 }
 
+// Weighted random selection based on difficulty mode
+function selectWeightedPages(pagePool) {
+    const pages = [];
+    
+    if (gameMode === 'normal') {
+        // Normal mode: 95% popular, 4% obscure, 1% ultra-obscure
+        const availablePopular = pagePool.filter(p => popularPages.includes(p));
+        const availableObscure = pagePool.filter(p => obscurePages.includes(p));
+        const availableUltra = pagePool.filter(p => ultraObscurePages.includes(p));
+        
+        // Create weighted pool (repeat pages based on desired probability)
+        const weightedPool = [
+            ...Array(95).fill(null).flatMap(() => availablePopular.length > 0 ? [availablePopular[Math.floor(Math.random() * availablePopular.length)]] : []),
+            ...Array(4).fill(null).flatMap(() => availableObscure.length > 0 ? [availableObscure[Math.floor(Math.random() * availableObscure.length)]] : []),
+            ...Array(1).fill(null).flatMap(() => availableUltra.length > 0 ? [availableUltra[Math.floor(Math.random() * availableUltra.length)]] : [])
+        ].filter(p => p); // Remove any null/undefined
+        
+        return weightedPool;
+        
+    } else if (gameMode === 'hard') {
+        // Hard mode: 15% popular, 80% obscure, 5% ultra-obscure (if available)
+        const availablePopular = pagePool.filter(p => popularPages.includes(p));
+        const availableObscure = pagePool.filter(p => obscurePages.includes(p));
+        const availableUltra = pagePool.filter(p => ultraObscurePages.includes(p));
+        
+        const weightedPool = [
+            ...Array(15).fill(null).flatMap(() => availablePopular.length > 0 ? [availablePopular[Math.floor(Math.random() * availablePopular.length)]] : []),
+            ...Array(80).fill(null).flatMap(() => availableObscure.length > 0 ? [availableObscure[Math.floor(Math.random() * availableObscure.length)]] : []),
+            ...Array(5).fill(null).flatMap(() => availableUltra.length > 0 ? [availableUltra[Math.floor(Math.random() * availableUltra.length)]] : [])
+        ].filter(p => p);
+        
+        return weightedPool;
+        
+    } else if (gameMode === 'ultra') {
+        // Ultra mode: 5% popular, 15% obscure, 80% ultra-obscure
+        const availablePopular = pagePool.filter(p => popularPages.includes(p));
+        const availableObscure = pagePool.filter(p => obscurePages.includes(p));
+        const availableUltra = pagePool.filter(p => ultraObscurePages.includes(p));
+        
+        const weightedPool = [
+            ...Array(5).fill(null).flatMap(() => availablePopular.length > 0 ? [availablePopular[Math.floor(Math.random() * availablePopular.length)]] : []),
+            ...Array(15).fill(null).flatMap(() => availableObscure.length > 0 ? [availableObscure[Math.floor(Math.random() * availableObscure.length)]] : []),
+            ...Array(80).fill(null).flatMap(() => availableUltra.length > 0 ? [availableUltra[Math.floor(Math.random() * availableUltra.length)]] : [])
+        ].filter(p => p);
+        
+        return weightedPool;
+    }
+    
+    return pagePool;
+}
+
 // Game Functions
 function startNewGame() {
     gameState.state = 'loading';
@@ -867,10 +918,20 @@ function startNewGame() {
     // Get the appropriate page pool based on game mode
     const pagePool = getPagePool();
     
-    // Select two different random pages
-    const shuffled = [...pagePool].sort(() => Math.random() - 0.5);
-    const startPageName = shuffled[0];
-    const targetPageName = shuffled[1];
+    // Get weighted pages based on difficulty mode
+    const weightedPool = selectWeightedPages(pagePool);
+    
+    // Select two different random pages from the weighted pool
+    const shuffled = [...weightedPool].sort(() => Math.random() - 0.5);
+    let startPageName = shuffled[0];
+    let targetPageName = shuffled[1];
+    
+    // Ensure we get two different pages
+    let attempts = 0;
+    while (startPageName === targetPageName && attempts < 10) {
+        targetPageName = shuffled[Math.floor(Math.random() * shuffled.length)];
+        attempts++;
+    }
 
     gameState.startPage = startPageName.replace(/_/g, ' ');
     gameState.targetPage = targetPageName.replace(/_/g, ' ');
