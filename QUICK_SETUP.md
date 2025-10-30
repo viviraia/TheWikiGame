@@ -47,14 +47,20 @@ Just push to main branch and it will auto-deploy with secrets injected.
 
 ## 📊 How It Works
 
-**Score Formula:** `clicks × 10 + time_in_seconds`
+**Score Formula:** `(1000 / clicks) × difficulty / (time_in_minutes)`
 
-Lower scores are better!
+**Higher scores are better!**
+
+- **Click Efficiency**: Fewer clicks = Higher score
+- **Difficulty Bonus**: Hard routes get 2.0x multiplier
+- **Time Factor**: Faster is better
 
 Example:
-- 5 clicks + 45 seconds = 95 points
-- 3 clicks + 120 seconds = 150 points
-- First player wins! 🏆
+- 3 clicks + 45 seconds + medium difficulty = **666 points** 🏆
+- 5 clicks + 32 seconds + hard difficulty = **566 points** 🥇
+- 10 clicks + 120 seconds + easy difficulty = **50 points** 😅
+
+**See full explanation:** `SCORING_EXPLAINED.md`
 
 ---
 

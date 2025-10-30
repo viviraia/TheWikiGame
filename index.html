@@ -19,6 +19,20 @@
             <div class="welcome-content">
                 <h1 class="game-title">The Wiki Game</h1>
                 <p class="game-subtitle">Navigate from one Wikipedia page to another!</p>
+                
+                <!-- Difficulty Mode Selector -->
+                <div class="mode-selector">
+                    <label for="gameModeSelect" class="mode-select-label">Difficulty Mode:</label>
+                    <select id="gameModeSelect" class="mode-select">
+                        <option value="normal">Normal Mode (649 pages)</option>
+                        <option value="hard">🔥 Hard Mode (1,227 pages) - 1.5x score</option>
+                        <option value="ultra">⚡ Ultra Hard Mode (1,600+ pages) - 2.0x score</option>
+                    </select>
+                    <p class="mode-description" id="modeDescription">
+                        Normal: Popular topics. Hard: Adds obscure topics. Ultra: Extremely challenging academic & historical topics!
+                    </p>
+                </div>
+                
                 <button id="startGameBtn" class="btn btn-primary">Start Game</button>
                 <button id="instructionsBtn" class="btn btn-secondary">How to Play</button>
                 <button id="leaderboardBtn" class="btn btn-secondary">Leaderboard</button>
@@ -38,6 +52,7 @@
         <div id="gameScreen" class="screen">
             <div class="game-header">
                 <div class="game-stats">
+                    <span id="gameModeLabel" class="stat mode-label">Normal Mode</span>
                     <span id="clickCount" class="stat">0 clicks</span>
                     <span id="timer" class="stat">00:00</span>
                 </div>
@@ -168,13 +183,14 @@
         <div id="leaderboardModal" class="modal">
             <div class="modal-content leaderboard-modal">
                 <div class="modal-header">
-                    <h2>🏆 Leaderboard</h2>
+                    <h2>🏆 Normal Mode Leaderboard</h2>
                     <button class="close-btn" id="closeLeaderboard">×</button>
                 </div>
                 <div class="modal-body">
                     <div class="leaderboard-tabs">
-                        <button class="tab-btn active" data-tab="global">Global Top 10</button>
-                        <button class="tab-btn" data-tab="recent">Recent Games</button>
+                        <button class="tab-btn active" data-mode="normal">Normal</button>
+                        <button class="tab-btn" data-mode="hard">🔥 Hard</button>
+                        <button class="tab-btn" data-mode="ultra">⚡ Ultra</button>
                     </div>
                     <div class="leaderboard-content">
                         <div id="leaderboardLoading" class="leaderboard-loading">
@@ -190,7 +206,8 @@
                                         <th>Route</th>
                                         <th>Clicks</th>
                                         <th>Time</th>
-                                        <th>Score</th>
+                                        <th>Difficulty</th>
+                                        <th>Score ⬆</th>
                                     </tr>
                                 </thead>
                                 <tbody id="leaderboardEntries">
@@ -210,5 +227,7 @@
 
     <script src="leaderboard.js"></script>
     <script src="app.js"></script>
+    <!-- Uncomment to enable Wikipedia API testing -->
+    <!-- <script src="test-wikipedia-api.js"></script> -->
 </body>
 </html>

@@ -182,6 +182,43 @@ Edit `app.js` to change how pages are selected or add filtering logic.
 - [ ] Better Wikipedia integration
 - [ ] Tutorial mode
 
+## 🧪 Testing
+
+This project includes comprehensive tests covering all features.
+
+### Running Tests
+
+```bash
+# Install dependencies
+npm install
+
+# Run all tests
+npm test
+
+# Run unit tests only
+npm run test:unit
+
+# Run integration tests
+npm run test:integration
+
+# Run E2E tests (requires local server)
+npm run test:e2e
+
+# Run tests in watch mode
+npm run test:watch
+
+# Generate coverage report
+npm test -- --coverage
+```
+
+### Test Coverage
+
+- **Unit Tests**: 150+ tests for leaderboard and game logic
+- **Integration Tests**: 40+ tests for game-leaderboard interaction
+- **E2E Tests**: 50+ tests for complete user workflows
+
+For detailed testing documentation, see [TESTING.md](TESTING.md)
+
 ## 💡 Tips for Best Experience
 
 1. **Use a modern browser** (Chrome, Edge, Safari)
@@ -197,6 +234,11 @@ Feel free to:
 - Suggest features
 - Submit improvements
 - Share with friends!
+
+**Before submitting PRs:**
+- Run tests: `npm test`
+- Ensure coverage remains above 70%
+- Add tests for new features
 
 ## 📄 License
 
