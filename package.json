@@ -1,14 +1,19 @@
 {
   "name": "kawaa-wiki-game",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Wikipedia Navigation Game with Leaderboard",
   "main": "src/js/app.js",
+  "type": "module",
   "scripts": {
+    "start": "npx http-server -p 8080",
+    "dev": "npx http-server -p 8080 -o",
     "test": "jest --coverage",
     "test:watch": "jest --watch",
     "test:unit": "jest tests/unit",
     "test:integration": "jest tests/integration",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "lint": "echo 'Linting not configured yet'",
+    "format": "echo 'Formatting not configured yet'"
   },
   "keywords": [
     "wikipedia",
