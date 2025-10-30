@@ -379,7 +379,7 @@ class WikiGame {
         if (title) {
             title.textContent = mode === 'ultra' ? 'Ultra Hard Mode Leaderboard' :
                                mode === 'hard' ? 'Hard Mode Leaderboard' :
-                               '🏆 Normal Mode Leaderboard';
+                               'Normal Mode Leaderboard';
         }
         
         if (entries.length === 0) {
@@ -435,9 +435,9 @@ class WikiGame {
         }
         
         if (category) {
-            this.ui.showHintMessage(`💡 <strong>Hint:</strong> The target article "<strong>${this.gameState.targetPage}</strong>" belongs to the <strong>${category}</strong> category.`);
+            this.ui.showHintMessage(` <strong>Hint:</strong> The target article "<strong>${this.gameState.targetPage}</strong>" belongs to the <strong>${category}</strong> category.`);
         } else {
-            this.ui.showHintMessage('❓ Sorry, no hint available for this article.');
+            this.ui.showHintMessage(' Sorry, no hint available for this article.');
         }
     }
 

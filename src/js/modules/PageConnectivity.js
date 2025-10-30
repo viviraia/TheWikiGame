@@ -157,7 +157,13 @@ export class PageConnectivity {
 
     /**
      * Calculate comprehensive difficulty score
-     * Combines popularity (views) and connectivity (backlinks)
+     * Prioritizes backlinks (connectivity) as the primary difficulty factor
+     * 
+     * Backlinks indicate how many paths lead to the target page:
+     * - Many backlinks (1000+) = Easy to reach = 1.0-1.5 difficulty
+     * - Medium backlinks (100-1000) = Moderate = 1.5-2.5 difficulty  
+     * - Few backlinks (10-100) = Hard = 2.5-3.5 difficulty
+     * - Very few backlinks (<10) = Very Hard = 3.5-4.0 difficulty
      * 
      * @returns {number} Difficulty score from 1.0 (easy) to 4.0 (very hard)
      */
@@ -169,20 +175,45 @@ export class PageConnectivity {
                 this.getBacklinkCount(startPage)
             ]);
             
-            // Popularity factor (lower views = harder)
-            // Use log scale because views vary by orders of magnitude
-            const popularityScore = Math.log10(targetViews.average + 10);
+            // Backlinks are the PRIMARY factor (70% weight)
+            // More backlinks = more ways to reach the page = easier
+            const backlinksCount = targetBacklinks.estimatedTotal;
             
-            // Connectivity factor (fewer backlinks = harder to reach)
-            const connectivityScore = Math.log10(targetBacklinks.estimatedTotal + 10);
+            // Calculate backlink difficulty on a tiered scale
+            let backlinkDifficulty;
+            if (backlinksCount >= 5000) {
+                // Very well connected pages (e.g., United States, World War II)
+                backlinkDifficulty = 1.0;
+            } else if (backlinksCount >= 1000) {
+                // Well connected pages (e.g., Python, Albert Einstein)
+                backlinkDifficulty = 1.0 + (5000 - backlinksCount) / 4000 * 0.5; // 1.0-1.5
+            } else if (backlinksCount >= 100) {
+                // Moderately connected pages
+                backlinkDifficulty = 1.5 + (1000 - backlinksCount) / 900 * 1.0; // 1.5-2.5
+            } else if (backlinksCount >= 10) {
+                // Poorly connected pages
+                backlinkDifficulty = 2.5 + (100 - backlinksCount) / 90 * 1.0; // 2.5-3.5
+            } else {
+                // Very obscure pages
+                backlinkDifficulty = 3.5 + (10 - backlinksCount) / 10 * 0.5; // 3.5-4.0
+            }
             
-            // Combined score (higher score = easier page)
-            const easeScore = popularityScore + connectivityScore;
+            // Popularity is a SECONDARY factor (30% weight)
+            // Lower views = slightly harder
+            const viewsCount = targetViews.average;
+            let popularityModifier;
+            if (viewsCount >= 10000) {
+                popularityModifier = 0.0; // Very popular, no penalty
+            } else if (viewsCount >= 1000) {
+                popularityModifier = 0.2; // Popular
+            } else if (viewsCount >= 100) {
+                popularityModifier = 0.4; // Less popular
+            } else {
+                popularityModifier = 0.6; // Obscure
+            }
             
-            // Convert to difficulty (invert and scale to 1-4 range)
-            // Most popular pages: ~3 + ~3 = 6 ease score -> 1.0 difficulty
-            // Least popular pages: ~1 + ~1 = 2 ease score -> 4.0 difficulty
-            const difficulty = Math.max(1.0, Math.min(4.0, 7 - easeScore));
+            // Combine: 70% backlinks, 30% popularity
+            const difficulty = Math.max(1.0, Math.min(4.0, backlinkDifficulty + popularityModifier));
             
             return {
                 difficulty: Number(difficulty.toFixed(2)),
@@ -190,8 +221,8 @@ export class PageConnectivity {
                     targetViews: targetViews.average,
                     targetBacklinks: targetBacklinks.estimatedTotal,
                     startBacklinks: startBacklinks.estimatedTotal,
-                    popularityScore: popularityScore.toFixed(2),
-                    connectivityScore: connectivityScore.toFixed(2)
+                    backlinkDifficulty: backlinkDifficulty.toFixed(2),
+                    popularityModifier: popularityModifier.toFixed(2)
                 }
             };
         } catch (error) {
