@@ -2,8 +2,9 @@ const CACHE_NAME = 'wiki-game-v1';
 const urlsToCache = [
   '/',
   '/index.html',
-  '/styles.css',
-  '/app.js',
+  '/src/css/styles.css',
+  '/src/js/app.js',
+  '/src/js/leaderboard.js',
   '/manifest.json'
 ];
 
