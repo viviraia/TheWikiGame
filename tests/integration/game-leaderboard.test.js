@@ -6,7 +6,7 @@
 const { describe, test, expect, beforeEach } = require('@jest/globals');
 
 // Load leaderboard classes
-const { LeaderboardManager, LocalLeaderboard } = require('../../leaderboard.js');
+const { LeaderboardManager, LocalLeaderboard } = require('../../src/js/leaderboard.js');
 
 describe('Game and Leaderboard Integration', () => {
   let localLeaderboard;

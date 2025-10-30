@@ -2,7 +2,7 @@
   "name": "kawaa-wiki-game",
   "version": "1.0.0",
   "description": "Wikipedia Navigation Game with Leaderboard",
-  "main": "app.js",
+  "main": "src/js/app.js",
   "scripts": {
     "test": "jest --coverage",
     "test:watch": "jest --watch",
@@ -27,8 +27,8 @@
   "jest": {
     "testEnvironment": "jsdom",
     "collectCoverageFrom": [
-      "*.js",
-      "!service-worker.js",
+      "src/js/*.js",
+      "!src/js/service-worker.js",
       "!tests/**"
     ],
     "coverageThreshold": {
