@@ -15,9 +15,26 @@ class WikiGame {
         this.wikiAPI = new WikipediaAPI();
         this.ui = new UIController();
         this.pageSelector = new PageSelector();
-        this.leaderboard = new LeaderboardManager();
+        this.leaderboard = null;
         this.articleHints = null;
+        this.initializeLeaderboard();
         this.loadArticleHints();
+    }
+
+    /**
+     * Initialize leaderboard with configuration
+     */
+    async initializeLeaderboard() {
+        try {
+            // Try to load config.js (with Gist settings)
+            const { LEADERBOARD_CONFIG } = await import('../../config.js');
+            this.leaderboard = new LeaderboardManager(LEADERBOARD_CONFIG);
+            console.log('Leaderboard initialized with custom config');
+        } catch (error) {
+            // Fallback to default (localStorage only)
+            this.leaderboard = new LeaderboardManager();
+            console.log('Leaderboard initialized with localStorage fallback');
+        }
     }
 
     /**

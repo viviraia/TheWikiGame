@@ -34,6 +34,9 @@ Thumbs.db
 .env.local
 .env.*.local
 
+# Configuration files with secrets
+config.js
+
 # Build files
 dist/
 build/

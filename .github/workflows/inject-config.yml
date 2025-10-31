@@ -1,0 +1,32 @@
+name: Inject Leaderboard Config
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Create config.js with secrets
+        run: |
+          cat > config.js << 'EOF'
+          export const LEADERBOARD_CONFIG = {
+              gistId: '${{ secrets.GIST_ID }}',
+              githubToken: '${{ secrets.GIST_TOKEN }}',
+              storageKey: 'wikiGameLeaderboard'
+          };
+          EOF
+      
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: .
+          keep_files: false
