@@ -24,6 +24,10 @@ body {
     overflow: hidden;
     height: 100vh;
     width: 100vw;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
 }
 
 #app {
@@ -81,7 +85,7 @@ body {
 }
 
 .game-title {
-    font-size: 2.5rem;
+    font-size: clamp(1.5rem, 8vw, 2.5rem);
     font-weight: bold;
     color: white;
     margin-bottom: 1rem;
@@ -89,10 +93,11 @@ body {
 }
 
 .game-subtitle {
-    font-size: 1.1rem;
+    font-size: clamp(0.9rem, 4vw, 1.1rem);
     color: rgba(255, 255, 255, 0.9);
     margin-bottom: 2rem;
     max-width: 400px;
+    padding: 0 1rem;
 }
 
 /* Buttons */
@@ -106,6 +111,8 @@ body {
     transition: all 0.3s ease;
     margin: 0.5rem;
     min-width: 200px;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .btn-primary {
@@ -114,7 +121,8 @@ body {
     box-shadow: var(--shadow-lg);
 }
 
-.btn-primary:hover {
+.btn-primary:hover,
+.btn-primary:active {
     transform: translateY(-2px);
     box-shadow: 0 12px 20px -3px rgba(0, 0, 0, 0.15);
 }
@@ -125,7 +133,8 @@ body {
     backdrop-filter: blur(10px);
 }
 
-.btn-secondary:hover {
+.btn-secondary:hover,
+.btn-secondary:active {
     background-color: rgba(255, 255, 255, 0.3);
 }
 
@@ -160,28 +169,33 @@ body {
 /* Game Screen */
 .game-header {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
-    padding: 1rem;
+    padding: 0.75rem 1rem;
     background-color: var(--primary-color);
     color: white;
+    flex-wrap: wrap;
+    gap: 0.5rem;
 }
 
 .game-stats {
     display: flex;
-    gap: 2rem;
+    gap: 1rem;
+    flex-wrap: wrap;
+    font-size: clamp(0.8rem, 2.5vw, 0.9rem);
 }
 
 .stat {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     font-weight: 600;
+    white-space: nowrap;
 }
 
 /* Game Info Card */
 .game-info-card {
     background-color: white;
-    margin: 1rem;
-    padding: 1rem;
+    margin: 0.75rem;
+    padding: 0.75rem;
     border-radius: 12px;
     box-shadow: var(--shadow);
 }
@@ -191,6 +205,7 @@ body {
     align-items: center;
     justify-content: space-between;
     gap: 0.5rem;
+    flex-wrap: wrap;
 }
 
 .page-info-item {
@@ -276,7 +291,7 @@ body {
 /* Wiki Container */
 .wiki-container {
     flex: 1;
-    margin: 0 1rem;
+    margin: 0 0.75rem;
     border-radius: 12px;
     overflow: hidden;
     box-shadow: var(--shadow);
@@ -284,6 +299,7 @@ body {
     display: flex;
     flex-direction: row;
     gap: 0;
+    min-height: 0;
 }
 
 .wiki-sidebar {
@@ -293,6 +309,7 @@ body {
     border-right: 1px solid #e5e7eb;
     overflow-y: auto;
     padding: 1rem;
+    display: block;
 }
 
 .wiki-sidebar h3 {
@@ -375,6 +392,9 @@ body {
 .wiki-content a {
     color: #0645ad;
     text-decoration: none;
+    /* Increase tap target size on mobile */
+    padding: 0.1rem 0;
+    display: inline-block;
 }
 
 .wiki-content a:hover {
@@ -402,6 +422,20 @@ body {
     border: 1px solid #e5e7eb;
     padding: 0.5rem;
     font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+    .wiki-content .infobox,
+    .wiki-content .sidebar,
+    .wiki-content .sidebar-collapse,
+    .wiki-content .vcard,
+    .wiki-content .nomobile,
+    .wiki-content table.infobox,
+    .wiki-content table.sidebar {
+        float: none;
+        max-width: 100%;
+        margin: 1rem 0;
+    }
 }
 
 /* Make infoboxes float left as requested */
@@ -447,24 +481,26 @@ body {
 /* Game Controls */
 .game-controls {
     position: absolute;
-    bottom: 1rem;
+    bottom: 0.75rem;
     left: 50%;
     transform: translateX(-50%);
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 1rem;
-    padding: 1rem;
+    gap: 0.75rem;
+    padding: 0.75rem;
     background-color: transparent;
     border-top: none;
     z-index: 10;
+    width: calc(100% - 1.5rem);
+    max-width: 500px;
 }
 
 .control-btn {
     padding: 0.75rem 1.5rem;
     border: none;
     border-radius: 10px;
-    font-size: 1rem;
+    font-size: 0.95rem;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -472,9 +508,13 @@ body {
     color: var(--text-primary);
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 0.5rem;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(10px);
+    flex: 1;
+    min-width: 0;
+    white-space: nowrap;
 }
 
 .control-btn:hover:not(:disabled) {
@@ -618,6 +658,8 @@ body {
     padding: 0;
     width: 30px;
     height: 30px;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .modal-body {
@@ -685,13 +727,108 @@ body {
 }
 
 /* Responsive Design */
+@media (max-width: 768px) {
+    .wiki-container {
+        margin: 0 0.5rem;
+    }
+
+    .wiki-sidebar {
+        display: none;
+    }
+
+    .game-info-card {
+        margin: 0.5rem;
+        padding: 0.5rem;
+    }
+
+    .page-info {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .page-info-item {
+        width: 100%;
+    }
+
+    .arrow {
+        transform: rotate(90deg);
+        align-self: center;
+    }
+
+    .game-controls {
+        bottom: 0.5rem;
+        gap: 0.5rem;
+        padding: 0.5rem;
+        width: calc(100% - 1rem);
+    }
+
+    .control-btn {
+        padding: 0.625rem 1rem;
+        font-size: 0.85rem;
+    }
+
+    .btn-icon {
+        font-size: 1rem;
+    }
+
+    .game-header {
+        padding: 0.5rem;
+    }
+
+    .game-stats {
+        gap: 0.5rem;
+        font-size: 0.75rem;
+    }
+
+    .stat {
+        font-size: 0.75rem;
+    }
+
+    .hint-btn-header {
+        padding: 0.4rem 0.75rem;
+        font-size: 0.8rem;
+    }
+
+    .wiki-content {
+        padding: 0.75rem;
+        font-size: 0.9rem;
+    }
+
+    .wiki-content h1 {
+        font-size: 1.4rem;
+    }
+
+    .wiki-content h2 {
+        font-size: 1.2rem;
+    }
+
+    .modal-content {
+        margin: 0.5rem;
+        max-width: calc(100% - 1rem);
+    }
+
+    .modal-header,
+    .modal-body {
+        padding: 1rem;
+    }
+
+    .win-title {
+        font-size: 1.8rem;
+    }
+
+    .stat-value {
+        font-size: 1.4rem;
+    }
+}
+
 @media (max-width: 640px) {
     .game-title {
-        font-size: 2rem;
+        font-size: 1.75rem;
     }
 
     .game-subtitle {
-        font-size: 1rem;
+        font-size: 0.95rem;
     }
 
     .btn {
@@ -716,6 +853,205 @@ body {
     .control-btn {
         flex: 1;
         min-width: 80px;
+    }
+
+    .leaderboard-modal {
+        width: 95%;
+        max-width: none;
+    }
+
+    .leaderboard-table {
+        font-size: 0.75rem;
+    }
+
+    .leaderboard-table th,
+    .leaderboard-table td {
+        padding: 0.5rem 0.25rem;
+    }
+
+    .route-info {
+        font-size: 0.7rem;
+        display: block;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 100px;
+    }
+
+    .tab-btn {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.85rem;
+    }
+
+    .rank-badge {
+        width: 28px;
+        height: 28px;
+        font-size: 0.8rem;
+    }
+
+    .score-badge {
+        padding: 0.2rem 0.6rem;
+        font-size: 0.95rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .welcome-content {
+        padding: 1rem;
+    }
+
+    .game-title {
+        font-size: 1.5rem;
+    }
+
+    .game-subtitle {
+        font-size: 0.85rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .btn {
+        min-width: 120px;
+        padding: 0.75rem 1.25rem;
+        font-size: 0.9rem;
+    }
+
+    .mode-selector {
+        margin: 1.5rem 0;
+    }
+
+    #gameModeSelect {
+        font-size: 0.9rem;
+        padding: 0.625rem 0.875rem;
+        max-width: 280px;
+    }
+
+    .mode-description {
+        font-size: 0.8rem;
+        padding: 0 0.5rem;
+    }
+
+    .game-controls {
+        bottom: 0.5rem;
+        gap: 0.5rem;
+    }
+
+    .control-btn {
+        padding: 0.5rem 0.875rem;
+        font-size: 0.8rem;
+        gap: 0.25rem;
+    }
+
+    .control-btn span:not(.btn-icon) {
+        display: none;
+    }
+
+    .control-btn {
+        min-width: 60px;
+    }
+
+    .wiki-content {
+        padding: 0.5rem;
+        font-size: 0.85rem;
+    }
+
+    .wiki-content h1 {
+        font-size: 1.2rem;
+    }
+
+    .wiki-content h2 {
+        font-size: 1rem;
+    }
+
+    .hint-message {
+        padding: 0.75rem;
+        font-size: 0.8rem;
+    }
+
+    .win-stats {
+        padding: 1.5rem;
+    }
+
+    .win-message {
+        font-size: 1rem;
+    }
+
+    .stat-box {
+        gap: 1.5rem;
+    }
+
+    .stat-label {
+        font-size: 0.8rem;
+    }
+
+    .stat-value {
+        font-size: 1.2rem;
+    }
+
+    .player-name-input {
+        padding: 0.625rem;
+        font-size: 0.9rem;
+    }
+
+    .modal-header h2 {
+        font-size: 1.25rem;
+    }
+
+    .leaderboard-table {
+        font-size: 0.7rem;
+    }
+
+    .leaderboard-table th,
+    .leaderboard-table td {
+        padding: 0.4rem 0.2rem;
+    }
+
+    .route-info {
+        max-width: 80px;
+        font-size: 0.65rem;
+    }
+
+    .rank-badge {
+        width: 24px;
+        height: 24px;
+        font-size: 0.7rem;
+    }
+
+    .score-badge {
+        padding: 0.15rem 0.5rem;
+        font-size: 0.85rem;
+    }
+
+    .difficulty-badge {
+        font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 360px) {
+    .game-title {
+        font-size: 1.3rem;
+    }
+
+    .btn {
+        min-width: 100px;
+        padding: 0.625rem 1rem;
+        font-size: 0.85rem;
+    }
+
+    .game-stats {
+        gap: 0.35rem;
+    }
+
+    .stat {
+        font-size: 0.7rem;
+    }
+
+    .control-btn {
+        padding: 0.5rem;
+        font-size: 0.75rem;
+    }
+
+    .game-controls {
+        gap: 0.35rem;
     }
 }
 
@@ -934,6 +1270,10 @@ body {
 
 /* Mobile responsive */
 @media (max-width: 768px) {
+    .wiki-sidebar {
+        display: none;
+    }
+
     .leaderboard-modal {
         width: 95%;
         max-width: none;
