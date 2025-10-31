@@ -116,10 +116,16 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      contents: read
+      pages: write
+      id-token: write
+    
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       
       - name: Create config.js with secrets
         run: |
@@ -131,12 +137,17 @@ jobs:
           };
           EOF
       
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+      
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: .
-          keep_files: false
+          path: '.'
+      
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
 ```
 
 4. **Enable GitHub Pages:**
