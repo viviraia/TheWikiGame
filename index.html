@@ -7,20 +7,38 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#6366f1">
     <title>The Wiki Game</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="src/css/styles.css">
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon-192.png">
 </head>
 <body>
     <div id="app">
+        <!-- All HTML content stays the same -->
+        <!-- The refactored JavaScript handles everything -->
+        
         <!-- Welcome Screen -->
         <div id="welcomeScreen" class="screen active">
             <div class="gradient-bg"></div>
             <div class="welcome-content">
                 <h1 class="game-title">The Wiki Game</h1>
                 <p class="game-subtitle">Navigate from one Wikipedia page to another!</p>
+                
+                <!-- Difficulty Mode Selector -->
+                <div class="mode-selector">
+                    <label for="gameModeSelect" class="mode-select-label">Difficulty Mode:</label>
+                    <select id="gameModeSelect" class="mode-select">
+                        <option value="normal">Normal Mode (1,003 pages)</option>
+                        <option value="hard">Hard Mode (7,147 pages) - 1.5x score</option>
+                        <option value="ultra">Ultra Hard Mode (27,048 pages) - 2.0x score</option>
+                    </select>
+                    <p class="mode-description" id="modeDescription">
+                        Normal: Most popular Wikipedia topics (Levels 1-3). Hard: More obscure topics (Level 4). Ultra: Ultra-obscure academic topics (Level 5)!
+                    </p>
+                </div>
+                
                 <button id="startGameBtn" class="btn btn-primary">Start Game</button>
                 <button id="instructionsBtn" class="btn btn-secondary">How to Play</button>
+                <button id="leaderboardBtn" class="btn btn-secondary">Leaderboard</button>
             </div>
         </div>
 
@@ -37,9 +55,13 @@
         <div id="gameScreen" class="screen">
             <div class="game-header">
                 <div class="game-stats">
+                    <span id="gameModeLabel" class="stat mode-label">Normal Mode</span>
                     <span id="clickCount" class="stat">0 clicks</span>
                     <span id="timer" class="stat">00:00</span>
                 </div>
+                <button id="hintBtn" class="hint-btn-header" style="display: none;">
+                    ▶ Hint
+                </button>
             </div>
 
             <div class="game-info-card">
@@ -54,6 +76,7 @@
                         <span id="targetPage" class="page-name">-</span>
                     </div>
                 </div>
+                <div id="hintMessage" class="hint-message" style="display: none;"></div>
             </div>
 
             <div class="wiki-container">
@@ -95,7 +118,12 @@
                         </div>
                     </div>
                 </div>
-                <button id="playAgainBtn" class="btn btn-primary">Play Again</button>
+                <div class="win-actions">
+                    <input type="text" id="playerNameInput" placeholder="Enter your name (optional)" class="player-name-input" maxlength="20">
+                    <button id="submitScoreBtn" class="btn btn-success">Submit to Leaderboard</button>
+                    <button id="playAgainBtn" class="btn btn-primary">Play Again</button>
+                    <button id="homeBtn" class="btn btn-secondary">Home</button>
+                </div>
             </div>
         </div>
 
@@ -152,14 +180,60 @@
                     <button class="close-btn" id="closeMenu">×</button>
                 </div>
                 <div class="modal-body">
-                    <button id="newGameBtn" class="menu-item-btn">🔄 New Game</button>
-                    <button id="viewInstructionsBtn" class="menu-item-btn">📖 Instructions</button>
-                    <button id="resumeGameBtn" class="menu-item-btn">▶️ Resume Game</button>
+                    <button id="newGameBtn" class="menu-item-btn">New Game</button>
+                    <button id="viewInstructionsBtn" class="menu-item-btn">Instructions</button>
+                    <button id="resumeGameBtn" class="menu-item-btn">Resume Game</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Leaderboard Modal -->
+        <div id="leaderboardModal" class="modal">
+            <div class="modal-content leaderboard-modal">
+                <div class="modal-header">
+                    <h2>Normal Mode Leaderboard</h2>
+                    <button class="close-btn" id="closeLeaderboard">×</button>
+                </div>
+                <div class="modal-body">
+                    <div class="leaderboard-tabs">
+                        <button class="tab-btn active" data-mode="normal">Normal</button>
+                        <button class="tab-btn" data-mode="hard">Hard</button>
+                        <button class="tab-btn" data-mode="ultra">Ultra</button>
+                    </div>
+                    <div class="leaderboard-content">
+                        <div id="leaderboardLoading" class="leaderboard-loading">
+                            <div class="spinner-small"></div>
+                            <p>Loading leaderboard...</p>
+                        </div>
+                        <div id="leaderboardData" class="leaderboard-data" style="display: none;">
+                            <table class="leaderboard-table">
+                                <thead>
+                                    <tr>
+                                        <th>Rank</th>
+                                        <th>Player</th>
+                                        <th>Route</th>
+                                        <th>Clicks</th>
+                                        <th>Time</th>
+                                        <th>Difficulty</th>
+                                        <th>Score ⬆</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="leaderboardEntries">
+                                    <!-- Entries will be inserted here -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <div id="leaderboardError" class="leaderboard-error" style="display: none;">
+                            <p>Failed to load leaderboard.</p>
+                            <button id="retryLeaderboard" class="btn btn-secondary">Retry</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <script src="app.js"></script>
+    <!-- Modular version -->
+    <script type="module" src="src/js/app.js"></script>
 </body>
 </html>

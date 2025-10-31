@@ -1,0 +1,54 @@
+{
+  "name": "kawaa-wiki-game",
+  "version": "2.0.0",
+  "description": "Wikipedia Navigation Game with Leaderboard",
+  "main": "src/js/app.js",
+  "type": "module",
+  "scripts": {
+    "start": "npx http-server -p 8080",
+    "dev": "npx http-server -p 8080 -o",
+    "test": "jest --coverage",
+    "test:watch": "jest --watch",
+    "test:unit": "jest tests/unit",
+    "test:integration": "jest tests/integration",
+    "test:e2e": "playwright test",
+    "test:connectivity": "node scripts/test-connectivity.js",
+    "generate:pages": "node scripts/generate-popular-pages.js",
+    "fetch:vital": "node scripts/fetch-vital-articles.js",
+    "generate:pages-vital": "node scripts/generate-pages-from-vital.js",
+    "generate:hints": "node scripts/generate-article-hints.js",
+    "lint": "echo 'Linting not configured yet'",
+    "format": "echo 'Formatting not configured yet'"
+  },
+  "keywords": [
+    "wikipedia",
+    "game",
+    "navigation",
+    "leaderboard"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@jest/globals": "^29.7.0",
+    "@playwright/test": "^1.40.0",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0"
+  },
+  "jest": {
+    "testEnvironment": "jsdom",
+    "collectCoverageFrom": [
+      "src/js/*.js",
+      "!src/js/service-worker.js",
+      "!tests/**"
+    ],
+    "coverageThreshold": {
+      "global": {
+        "branches": 70,
+        "functions": 70,
+        "lines": 70,
+        "statements": 70
+      }
+    },
+    "setupFilesAfterEnv": ["<rootDir>/tests/setup.js"]
+  }
+}
